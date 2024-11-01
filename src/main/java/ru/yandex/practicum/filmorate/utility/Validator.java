@@ -59,12 +59,8 @@ public class Validator {
             throw new ValidationException("Birthday cannot be in future");
         }
         if (user.getName() == null || user.getName().isBlank()) {
-            User fixedUser = new User();
-            fixedUser.setId(user.getId());
+            User fixedUser = new User(user);
             fixedUser.setName(user.getLogin());
-            fixedUser.setBirthday(user.getBirthday());
-            fixedUser.setLogin(user.getLogin());
-            fixedUser.setEmail(user.getEmail());
             log.info("The username was changed to login '{}'", fixedUser.getLogin());
             return fixedUser;
         }
