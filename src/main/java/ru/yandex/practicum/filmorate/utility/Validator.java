@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.utility;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -16,7 +14,14 @@ public class Validator {
     private Validator() {}
 
     public static void validateFilm(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
+        if (film.getName() == null
+                || film.getDescription() == null
+                || film.getDuration() == null
+                || film.getReleaseDate() == null) {
+            log.error("Film have null values");
+            throw new ValidationException("Film have null values");
+        }
+        if (film.getName().isBlank()) {
             log.error("Film name is null or empty");
             throw new ValidationException("Film name cannot be empty");
         }
@@ -35,11 +40,17 @@ public class Validator {
     }
 
     public static User validateUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        if (user.getLogin() == null
+                || user.getEmail() == null
+                || user.getBirthday() == null) {
+            log.error("User has null values");
+            throw new ValidationException("User has null values");
+        }
+        if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Email is not valid");
             throw new ValidationException("Email is not valid");
         }
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.error("Login is not valid");
             throw new ValidationException("Login cannot be empty and contain spaces");
         }
