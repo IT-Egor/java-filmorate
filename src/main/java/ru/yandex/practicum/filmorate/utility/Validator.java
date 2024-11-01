@@ -1,5 +1,8 @@
 package ru.yandex.practicum.filmorate.utility;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -7,33 +10,41 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.time.Month;
 
+@Slf4j()
 public class Validator {
 
     private Validator() {}
 
     public static void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
+            log.error("Film name is null or empty");
             throw new ValidationException("Film name cannot be empty");
         }
         if (film.getDescription().length() > 200) {
+            log.error("Film description is too long");
             throw new ValidationException("Film description cannot be longer than 200 characters");
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, Month.DECEMBER, 28))) {
+            log.error("Film release date is too old");
             throw new ValidationException("Film release date cannot be earlier than 28.12.1895");
         }
         if (!film.getDuration().isPositive()) {
+            log.error("Film duration is not positive");
             throw new ValidationException("Film duration should be positive");
         }
     }
 
     public static User validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            throw new ValidationException("The specified address does not match the template");
+            log.error("Email is not valid");
+            throw new ValidationException("Email is not valid");
         }
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            log.error("Login is not valid");
             throw new ValidationException("Login cannot be empty and contain spaces");
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.error(("Birthday is in the future"));
             throw new ValidationException("Birthday cannot be in future");
         }
         if (user.getName() == null || user.getName().isBlank()) {
@@ -43,6 +54,7 @@ public class Validator {
             fixedUser.setBirthday(user.getBirthday());
             fixedUser.setLogin(user.getLogin());
             fixedUser.setEmail(user.getEmail());
+            log.info("The username was changed to login '{}'", fixedUser.getLogin());
             return fixedUser;
         }
         return user;
