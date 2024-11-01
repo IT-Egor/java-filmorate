@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
+        Validator.validateFilm(film);
         int id = getNextId();
         film.setId(id);
         films.put(id, film);
@@ -29,6 +31,7 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
+        Validator.validateFilm(film);
         if (!films.containsKey(film.getId())) {
             throw new NotFoundException(String.format("Film with id '%s' not found", film.getId()));
         }
