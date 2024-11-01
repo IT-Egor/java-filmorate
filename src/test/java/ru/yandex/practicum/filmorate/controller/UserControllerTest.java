@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -50,5 +52,14 @@ class UserControllerTest {
     @Test
     void shouldReturnEmptyListWhenNoUsersFound() {
         assertEquals(0, userController.getUsers().size());
+    }
+
+    @Test
+    void shouldNotUpdateUnexistedFilm() {
+        userController.createUser(user);
+        User updatedUser = new User(user);
+        updatedUser.setId(0);
+
+        assertThrows(NotFoundException.class, () -> userController.updateUser(updatedUser));
     }
 }

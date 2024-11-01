@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.Duration;
@@ -51,5 +52,14 @@ class FilmControllerTest {
     @Test
     void shouldReturnEmptyListWhenNoFilmsFound() {
         assertEquals(0, filmController.getFilms().size());
+    }
+
+    @Test
+    void shouldNotUpdateUnexistedFilm() {
+        filmController.addFilm(film);
+        Film updatedFilm = new Film(film);
+        updatedFilm.setId(0);
+
+        assertThrows(NotFoundException.class, () -> filmController.updateFilm(updatedFilm));
     }
 }
