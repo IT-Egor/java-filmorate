@@ -37,6 +37,7 @@ public class UserController {
     public User updateUser(@Valid @RequestBody User requestUser) {
         User user = Validator.validateUser(requestUser);
         if (!users.containsKey(user.getId())) {
+            log.info("User with id {} not found", user.getId());
             throw new NotFoundException(String.format("User with id %d not found", user.getId()));
         }
         users.put(user.getId(), user);

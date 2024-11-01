@@ -36,6 +36,7 @@ public class FilmController {
     public Film updateFilm(@RequestBody Film film) {
         Validator.validateFilm(film);
         if (!films.containsKey(film.getId())) {
+            log.info("Film with id {} not found", film.getId());
             throw new NotFoundException(String.format("Film with id %d not found", film.getId()));
         }
         films.put(film.getId(), film);
