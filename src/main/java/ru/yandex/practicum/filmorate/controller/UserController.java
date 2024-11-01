@@ -13,7 +13,7 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    private final Map<Integer, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
 
     @GetMapping
     public Collection<User> getUsers() {
@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User requestUser) {
         User user = Validator.validateUser(requestUser);
-        int id = getNextId();
+        long id = getNextId();
         user.setId(id);
         users.put(id, user);
         return user;
@@ -40,10 +40,10 @@ public class UserController {
     }
 
 
-    private int getNextId() {
-        int maxId = users.keySet().stream()
-                .max(Integer::compareTo)
-                .orElse(0);
+    private long getNextId() {
+        long maxId = users.keySet().stream()
+                .max(Long::compareTo)
+                .orElse(0L);
         return ++maxId;
     }
 }

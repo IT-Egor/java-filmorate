@@ -13,7 +13,7 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
 
     @GetMapping
     public Collection<Film> getFilms() {
@@ -23,7 +23,7 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
         Validator.validateFilm(film);
-        int id = getNextId();
+        long id = getNextId();
         film.setId(id);
         films.put(id, film);
         return film;
@@ -40,10 +40,10 @@ public class FilmController {
     }
 
 
-    private int getNextId() {
-        int maxId = films.keySet().stream()
-                .max(Integer::compareTo)
-                .orElse(0);
+    private long getNextId() {
+        long maxId = films.keySet().stream()
+                .max(Long::compareTo)
+                .orElse(0L);
         return ++maxId;
     }
 }
