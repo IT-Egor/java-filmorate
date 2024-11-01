@@ -41,8 +41,7 @@ public class FilmController {
 
 
     private int getNextId() {
-        int maxId = films.values().stream()
-                .map(Film::getId)
+        int maxId = films.keySet().stream()
                 .max(Integer::compareTo)
                 .orElse(0);
         return ++maxId;
