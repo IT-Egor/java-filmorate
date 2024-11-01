@@ -50,6 +50,6 @@ class FilmControllerTest {
 
     @Test
     void shouldReturnEmptyListWhenNoFilmsFound() {
-        assertEquals(filmController.getFilms().size(), 0);
+        assertEquals(0, filmController.getFilms().size());
     }
 }
