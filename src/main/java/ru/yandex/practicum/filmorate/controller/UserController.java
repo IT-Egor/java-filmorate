@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +21,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody User requestUser) {
+        User user = Validator.validateUser(requestUser);
         int id = getNextId();
         user.setId(id);
         users.put(id, user);
@@ -28,7 +30,8 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@RequestBody User requestUser) {
+        User user = Validator.validateUser(requestUser);
         if (!users.containsKey(user.getId())) {
             throw new NotFoundException(String.format("User with id %d not found", user.getId()));
         }
