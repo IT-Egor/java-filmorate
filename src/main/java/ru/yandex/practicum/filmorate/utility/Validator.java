@@ -43,7 +43,6 @@ public class Validator {
             fixedUser.setBirthday(user.getBirthday());
             fixedUser.setLogin(user.getLogin());
             fixedUser.setEmail(user.getEmail());
-//            throw new ValidationException("Username cannot be empty");
             return fixedUser;
         }
         return user;
