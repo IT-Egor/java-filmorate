@@ -8,6 +8,8 @@ import java.time.Month;
 
 public class Validator {
 
+    private Validator() {}
+
     public static void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Film name cannot be empty");
