@@ -11,7 +11,9 @@ import java.time.Month;
 @Slf4j()
 public class Validator {
 
-    private Validator() {}
+    private Validator() {
+
+    }
 
     public static void validateFilm(Film film) {
         if (film.getName() == null

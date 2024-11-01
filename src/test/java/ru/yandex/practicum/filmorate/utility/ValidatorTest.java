@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ValidatorTest {
-    
+
     @Test
     void shouldNotValidateEmptyNameFilm() {
         Film film = new Film(0, "", "description", LocalDate.now(), Duration.ofHours(1));
@@ -44,7 +44,7 @@ class ValidatorTest {
         Film film = new Film(0, "name", null, LocalDate.now(), Duration.ofHours(1));
         assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
     }
-    
+
     @Test
     void shouldNotValidateNullDurationFilm() {
         Film film = new Film(0, "name", "description", LocalDate.now(), null);
@@ -76,8 +76,8 @@ class ValidatorTest {
         Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofHours(1));
         assertDoesNotThrow(() -> Validator.validateFilm(film));
     }
-    
-    
+
+
 
     @Test
     void shouldNotValidateNullEmailUser() {
