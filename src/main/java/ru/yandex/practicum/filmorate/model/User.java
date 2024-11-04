@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class User {
     long id;
-    @Email
     String email;
     String login;
     String name;
