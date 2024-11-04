@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.time.Month;
 
-@Slf4j()
+@Slf4j
 public class Validator {
 
     private Validator() {

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
     private UserController userController;
-    User user;
+    private User user;
 
     @BeforeEach
     void setUp() {
