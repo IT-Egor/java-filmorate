@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -24,8 +23,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User requestUser) {
-        User user = Validator.validateUser(requestUser);
+    public User createUser(@RequestBody User user) {
+        Validator.validateUser(user);
         long id = getNextId();
         user.setId(id);
         users.put(id, user);
@@ -34,8 +33,8 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User requestUser) {
-        User user = Validator.validateUser(requestUser);
+    public User updateUser(@RequestBody User user) {
+        Validator.validateUser(user);
         if (!users.containsKey(user.getId())) {
             log.info("User with id {} not found", user.getId());
             throw new NotFoundException(String.format("User with id %d not found", user.getId()));

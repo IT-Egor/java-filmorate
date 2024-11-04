@@ -41,7 +41,7 @@ public class Validator {
         }
     }
 
-    public static User validateUser(User user) {
+    public static void validateUser(User user) {
         if (user.getLogin() == null
                 || user.getEmail() == null
                 || user.getBirthday() == null) {
@@ -61,11 +61,8 @@ public class Validator {
             throw new ValidationException("Birthday cannot be in future");
         }
         if (user.getName() == null || user.getName().isBlank()) {
-            User fixedUser = new User(user);
-            fixedUser.setName(user.getLogin());
-            log.info("The username was changed to login '{}'", fixedUser.getLogin());
-            return fixedUser;
+            user.setName(user.getLogin());
+            log.info("The username was changed to login '{}'", user.getLogin());
         }
-        return user;
     }
 }

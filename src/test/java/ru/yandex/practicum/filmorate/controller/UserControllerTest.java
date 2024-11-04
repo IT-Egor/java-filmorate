@@ -30,8 +30,18 @@ class UserControllerTest {
     @Test
     void shouldGenerateCorrectId() {
         userController.createUser(user);
-        userController.createUser(new User(user));
-        userController.createUser(new User(user));
+        userController.createUser(new User(
+                user.getId(),
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                LocalDate.now()));
+        userController.createUser(new User(
+                user.getId(),
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                LocalDate.now()));
 
         List<Long> ids = userController.getUsers().stream().map(User::getId).toList();
         assertEquals(ids.get(0), ids.get(1) - 1);
@@ -41,7 +51,12 @@ class UserControllerTest {
     @Test
     void shouldUpdateUser() {
         userController.createUser(user);
-        User updatedUser = new User(user);
+        User updatedUser = new User(
+                user.getId(),
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                LocalDate.now());
         updatedUser.setName("updatedUser");
 
         userController.updateUser(updatedUser);
@@ -56,7 +71,12 @@ class UserControllerTest {
     @Test
     void shouldNotUpdateUnexistedFilm() {
         userController.createUser(user);
-        User updatedUser = new User(user);
+        User updatedUser = new User(
+                user.getId(),
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                LocalDate.now());
         updatedUser.setId(0);
 
         assertThrows(NotFoundException.class, () -> userController.updateUser(updatedUser));

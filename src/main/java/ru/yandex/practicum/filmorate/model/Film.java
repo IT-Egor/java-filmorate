@@ -11,17 +11,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
-    long id;
-    String name;
-    String description;
-    LocalDate releaseDate;
-    Duration duration;
-
-    public Film(Film film) {
-        this.id = film.getId();
-        this.name = film.getName();
-        this.description = film.getDescription();
-        this.releaseDate = film.getReleaseDate();
-        this.duration = film.getDuration();
-    }
+    private long id;
+    private String name;
+    private String description;
+    private LocalDate releaseDate;
+    private Duration duration;
 }

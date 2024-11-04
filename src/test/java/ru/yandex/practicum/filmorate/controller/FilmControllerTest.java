@@ -31,8 +31,17 @@ class FilmControllerTest {
     @Test
     void shouldGenerateCorrectId() {
         filmController.addFilm(film);
-        filmController.addFilm(new Film(film));
-        filmController.addFilm(new Film(film));
+        filmController.addFilm(new Film(
+                film.getId(),
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration()));
+        filmController.addFilm(new Film(film.getId(),
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration()));
 
         List<Long> ids = filmController.getFilms().stream().map(Film::getId).toList();
         assertEquals(ids.get(0), ids.get(1) - 1);
@@ -42,7 +51,12 @@ class FilmControllerTest {
     @Test
     void shouldUpdateFilm() {
         filmController.addFilm(film);
-        Film updatedFilm = new Film(film);
+        Film updatedFilm = new Film(
+                film.getId(),
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration());
         updatedFilm.setName("updatedFilm");
 
         filmController.updateFilm(updatedFilm);
@@ -55,9 +69,14 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotUpdateUnexistedFilm() {
+    void shouldNotUpdateUnexistingFilm() {
         filmController.addFilm(film);
-        Film updatedFilm = new Film(film);
+        Film updatedFilm = new Film(
+                film.getId(),
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration());
         updatedFilm.setId(0);
 
         assertThrows(NotFoundException.class, () -> filmController.updateFilm(updatedFilm));

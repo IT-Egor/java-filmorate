@@ -10,17 +10,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    long id;
-    String email;
-    String login;
-    String name;
-    LocalDate birthday;
-
-    public User(User user) {
-        this.id = user.id;
-        this.email = user.email;
-        this.login = user.login;
-        this.name = user.name;
-        this.birthday = user.birthday;
-    }
+    private long id;
+    private String email;
+    private String login;
+    private String name;
+    private LocalDate birthday;
 }

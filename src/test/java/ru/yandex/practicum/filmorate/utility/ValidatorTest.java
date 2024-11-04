@@ -130,8 +130,13 @@ class ValidatorTest {
     @Test
     void shouldChangeUserNameToLoginIfNameIsEmpty() {
         User user = new User(0, "email@gmail.com", "login", "", LocalDate.now());
-        User fixedUser = new User(user);
+        User fixedUser = new User(user.getId(),
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                LocalDate.now());
         fixedUser.setName("login");
-        assertEquals(fixedUser.toString(), Validator.validateUser(user).toString());
+        Validator.validateUser(user);
+        assertEquals(fixedUser.toString(), user.toString());
     }
 }
