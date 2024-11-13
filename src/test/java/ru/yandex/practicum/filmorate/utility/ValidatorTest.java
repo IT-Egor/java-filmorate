@@ -80,24 +80,6 @@ class ValidatorTest {
 
 
     @Test
-    void shouldNotValidateNullEmailUser() {
-        User user = new User(0, null, "login", "name", LocalDate.now());
-        assertThrows(ValidationException.class, () -> Validator.validateUser(user));
-    }
-
-    @Test
-    void shouldNotValidateNullLoginUser() {
-        User user = new User(0, "email@gmail.com", null, "name", LocalDate.now());
-        assertThrows(ValidationException.class, () -> Validator.validateUser(user));
-    }
-
-    @Test
-    void shouldNotValidateNullBirthdayUser() {
-        User user = new User(0, "email@gmail.com", "login", "name", null);
-        assertThrows(ValidationException.class, () -> Validator.validateUser(user));
-    }
-
-    @Test
     void shouldNotValidateBlankEmailUser() {
         User user = new User(0, "", "login", "name", LocalDate.now());
         assertThrows(ValidationException.class, () -> Validator.validateUser(user));

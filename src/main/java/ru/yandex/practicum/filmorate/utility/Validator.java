@@ -42,12 +42,6 @@ public class Validator {
     }
 
     public static void validateUser(User user) {
-        if (user.getLogin() == null
-                || user.getEmail() == null
-                || user.getBirthday() == null) {
-            log.error("User has null values");
-            throw new ValidationException("User has null values");
-        }
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Email is not valid");
             throw new ValidationException("Email is not valid");
@@ -60,7 +54,7 @@ public class Validator {
             log.error(("Birthday is in the future"));
             throw new ValidationException("Birthday cannot be in future");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("The username was changed to login '{}'", user.getLogin());
         }
