@@ -25,6 +25,8 @@ public class UserService {
     }
 
     public void removeFriends(User user1, User user2) {
+        userExistsCheck(user1);
+        userExistsCheck(user2);
         user1.removeFriend(user2);
         user2.removeFriend(user1);
     }

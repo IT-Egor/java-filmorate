@@ -56,6 +56,13 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldNotRemoveFriendIfFriendNotFoundWhileRemoving() {
+        User user2 = new User(0, "email4@gmail.com", "login4", "name4", LocalDate.now());
+        assertThrows(NotFoundException.class, () -> userService.removeFriends(user, user2));
+        assertThrows(NotFoundException.class, () -> userService.removeFriends(user2, user));
+    }
+
+    @Test
     void shouldReturnCommonFriends() {
         userService.makeFriends(user, user2);
         userService.makeFriends(user, user3);
