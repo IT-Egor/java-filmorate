@@ -35,10 +35,6 @@ public class UserService {
         User user2 = userStorage.findUser(userId2);
         Set<Long> commonFriends = new HashSet<>(user1.getFriends());
         commonFriends.retainAll(user2.getFriends());
-        return getUsersFromStorage(commonFriends);
-    }
-
-    public Collection<User> getUsersFromStorage(Collection<Long> userIds) {
-        return userIds.stream().map(userStorage::findUser).toList();
+        return userStorage.findUsers(commonFriends);
     }
 }

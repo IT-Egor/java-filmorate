@@ -59,6 +59,13 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(id);
     }
 
+    @Override
+    public Collection<User> findUsers(Collection<Long> ids) {
+        return ids.stream()
+                .map(this::findUser)
+                .toList();
+    }
+
     private long getNextId() {
         long maxId = users.keySet().stream()
                 .max(Long::compareTo)

@@ -45,7 +45,7 @@ public class UserController {
     @GetMapping("/{id}/friends")
     public Collection<User> getFriends(@PathVariable Long id) {
         User user = userStorage.findUser(id);
-        return userService.getUsersFromStorage(user.getFriends());
+        return userStorage.findUsers(user.getFriends());
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
