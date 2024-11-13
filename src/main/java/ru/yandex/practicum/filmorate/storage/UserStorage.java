@@ -12,5 +12,5 @@ public interface UserStorage {
 
     User updateUser(User user);
 
-    Optional<User> findUser(long id);
+    User findUser(long id);
 }

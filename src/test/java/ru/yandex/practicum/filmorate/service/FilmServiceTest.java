@@ -58,7 +58,7 @@ class FilmServiceTest {
     @Test
     void shouldAddLike() {
         Film film = filmStorage.findFilm(1).get();
-        User user = userStorage.findUser(1).get();
+        User user = userStorage.findUser(1);
         filmService.addLike(film, user);
         assertEquals(1, film.getLikesCount());
         assertTrue(film.getLikedUsersIds().contains(user.getId()));
@@ -77,7 +77,7 @@ class FilmServiceTest {
     @Test
     void shouldNotAddLikeIfFilmNotFound() {
         Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
-        User user = userStorage.findUser(1).get();
+        User user = userStorage.findUser(1);
         assertThrows(NotFoundException.class, () -> filmService.addLike(film, user));
         assertEquals(0, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(user.getId()));
@@ -86,7 +86,7 @@ class FilmServiceTest {
     @Test
     void shouldRemoveLike() {
         Film film = filmStorage.findFilm(1).get();
-        User user = userStorage.findUser(1).get();
+        User user = userStorage.findUser(1);
         filmService.addLike(film, user);
         filmService.removeLike(film, user);
         assertEquals(0, film.getLikesCount());
@@ -96,7 +96,7 @@ class FilmServiceTest {
     @Test
     void shouldNotRemoveLikeIfUserNotFound() {
         Film film = filmStorage.findFilm(1).get();
-        User user = userStorage.findUser(1).get();
+        User user = userStorage.findUser(1);
         filmService.addLike(film, user);
         User unexistingUser = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
         assertThrows(NotFoundException.class, () -> filmService.removeLike(film, unexistingUser));
@@ -107,7 +107,7 @@ class FilmServiceTest {
     @Test
     void shouldNotRemoveLikeIfFilmNotFound() {
         Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
-        User user = userStorage.findUser(1).get();
+        User user = userStorage.findUser(1);
         assertThrows(NotFoundException.class, () -> filmService.removeLike(film, user));
         assertEquals(0, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(user.getId()));
@@ -120,7 +120,7 @@ class FilmServiceTest {
         for (int i = FILMS_NUMBER; i > 0 ; i--) {
             for (int j = i - filmsAndUsersDiff; j > 0; j--) {
                 Film film = filmStorage.findFilm(i).get();
-                User user = userStorage.findUser(j).get();
+                User user = userStorage.findUser(j);
                 filmService.addLike(film, user);
             }
         }

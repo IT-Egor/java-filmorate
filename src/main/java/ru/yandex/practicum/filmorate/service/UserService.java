@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -17,29 +16,29 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public void makeFriends(User user1, User user2) {
-        userExistsCheck(user1);
-        userExistsCheck(user2);
-        user1.addFriend(user2);
-        user2.addFriend(user1);
+    public void makeFriends(Long userId, Long friendId) {
+        User user = userStorage.findUser(userId);
+        User friend = userStorage.findUser(friendId);
+        user.addFriend(friendId);
+        friend.addFriend(userId);
     }
 
-    public void removeFriends(User user1, User user2) {
-        userExistsCheck(user1);
-        userExistsCheck(user2);
-        user1.removeFriend(user2);
-        user2.removeFriend(user1);
+    public void removeFriends(Long userId, Long friendId) {
+        User user = userStorage.findUser(userId);
+        User friend = userStorage.findUser(friendId);
+        user.removeFriend(friendId);
+        friend.removeFriend(userId);
     }
 
-    public Collection<Long> commonFriends(User user1, User user2) {
+    public Collection<User> commonFriends(Long userId1, Long userId2) {
+        User user1 = userStorage.findUser(userId1);
+        User user2 = userStorage.findUser(userId2);
         Set<Long> commonFriends = new HashSet<>(user1.getFriends());
         commonFriends.retainAll(user2.getFriends());
-        return commonFriends;
+        return getUsersFromStorage(commonFriends);
     }
 
-    private void userExistsCheck(User user) {
-        if (userStorage.findUser(user.getId()).isEmpty()) {
-            throw new NotFoundException(String.format("User with id %d not found", user.getId()));
-        }
+    public Collection<User> getUsersFromStorage(Collection<Long> userIds) {
+        return userIds.stream().map(userStorage::findUser).toList();
     }
 }

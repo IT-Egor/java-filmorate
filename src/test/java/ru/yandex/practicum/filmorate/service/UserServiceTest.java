@@ -29,7 +29,7 @@ class UserServiceTest {
 
     @Test
     void shouldMakeFriends() {
-        userService.makeFriends(user, user2);
+        userService.makeFriends(user.getId(), user2.getId());
         assertTrue(user.getFriends().contains(user2.getId()));
         assertTrue(user2.getFriends().contains(user.getId()));
     }
@@ -37,20 +37,21 @@ class UserServiceTest {
     @Test
     void shouldNotMakeFriendsIfFriendNotFound() {
         User user2 = new User(0, "email4@gmail.com", "login4", "name4", LocalDate.now());
-        assertThrows(NotFoundException.class, () -> userService.makeFriends(user, user2));
+        assertThrows(NotFoundException.class, () ->
+                userService.makeFriends(user.getId(), user2.getId()));
     }
 
     @Test
     void shouldRemoveFriend() {
-        userService.makeFriends(user, user2);
-        userService.removeFriends(user, user2);
+        userService.makeFriends(user.getId(), user2.getId());
+        userService.removeFriends(user.getId(), user2.getId());
         assertFalse(user2.getFriends().contains(user.getId()));
         assertFalse(user.getFriends().contains(user2.getId()));
     }
 
     @Test
     void shouldDoNothingIfFriendNotFoundWhileRemoving() {
-        userService.removeFriends(user, user2);
+        userService.removeFriends(user.getId(), user2.getId());
         assertFalse(user2.getFriends().contains(user.getId()));
         assertFalse(user.getFriends().contains(user2.getId()));
     }
@@ -58,18 +59,20 @@ class UserServiceTest {
     @Test
     void shouldNotRemoveFriendIfFriendNotFoundWhileRemoving() {
         User user2 = new User(0, "email4@gmail.com", "login4", "name4", LocalDate.now());
-        assertThrows(NotFoundException.class, () -> userService.removeFriends(user, user2));
-        assertThrows(NotFoundException.class, () -> userService.removeFriends(user2, user));
+        assertThrows(NotFoundException.class, () ->
+                userService.removeFriends(user.getId(), user2.getId()));
+        assertThrows(NotFoundException.class, () ->
+                userService.removeFriends(user2.getId(), user.getId()));
     }
 
     @Test
     void shouldReturnCommonFriends() {
-        userService.makeFriends(user, user2);
-        userService.makeFriends(user, user3);
-        userService.makeFriends(user2, user3);
-        userService.makeFriends(user2, user4);
-        assertArrayEquals(new Long[]{user3.getId()}, userService.commonFriends(user, user2).toArray());
-        assertArrayEquals(new Long[]{user2.getId()}, userService.commonFriends(user, user3).toArray());
-        assertArrayEquals(new Long[]{user2.getId()}, userService.commonFriends(user, user4).toArray());
+        userService.makeFriends(user.getId(), user2.getId());
+        userService.makeFriends(user.getId(), user3.getId());
+        userService.makeFriends(user2.getId(), user3.getId());
+        userService.makeFriends(user2.getId(), user4.getId());
+        assertArrayEquals(new Long[]{user3.getId()}, userService.commonFriends(user.getId(), user2.getId()).toArray());
+        assertArrayEquals(new Long[]{user2.getId()}, userService.commonFriends(user.getId(), user3.getId()).toArray());
+        assertArrayEquals(new Long[]{user2.getId()}, userService.commonFriends(user.getId(), user4.getId()).toArray());
     }
 }

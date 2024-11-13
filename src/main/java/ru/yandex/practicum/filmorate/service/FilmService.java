@@ -18,15 +18,15 @@ public class FilmService {
     private final UserStorage userStorage;
 
     public void addLike(Film film, User user) {
-        userExistsCheck(user);
-        filmExistsCheck(film);
-        film.addLike(user);
+//        userExistsCheck(user);
+//        filmExistsCheck(film);
+//        film.addLike(user);
     }
 
     public void removeLike(Film film, User user) {
-        userExistsCheck(user);
-        filmExistsCheck(film);
-        film.removeLike(user);
+//        userExistsCheck(user);
+//        filmExistsCheck(film);
+//        film.removeLike(user);
     }
 
     public Collection<Film> getMostPopularFilms() {
@@ -37,11 +37,11 @@ public class FilmService {
                 .toList();
     }
 
-    private void userExistsCheck(User user) {
-        if (userStorage.findUser(user.getId()).isEmpty()) {
-            throw new NotFoundException(String.format("User with id %d not found", user.getId()));
-        }
-    }
+//    private void userExistsCheck(User user) {
+//        if (userStorage.findUser(user.getId()).isEmpty()) {
+//            throw new NotFoundException(String.format("User with id %d not found", user.getId()));
+//        }
+//    }
 
     private void filmExistsCheck(Film film) {
         if (filmStorage.findFilm(film.getId()).isEmpty()) {
