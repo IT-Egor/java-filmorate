@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.utility.Validator;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @Slf4j

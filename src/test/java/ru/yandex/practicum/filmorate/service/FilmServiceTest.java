@@ -125,7 +125,7 @@ class FilmServiceTest {
     void shouldReturnMostPopularFilms() {
         int filmsAndUsersDiff = FILMS_NUMBER - USERS_NUMBER;
 
-        for (int i = FILMS_NUMBER; i > 0 ; i--) {
+        for (int i = FILMS_NUMBER; i > 0; i--) {
             for (int j = i - filmsAndUsersDiff; j > 0; j--) {
                 Film film = filmStorage.findFilm(i);
                 User user = userStorage.findUser(j);
