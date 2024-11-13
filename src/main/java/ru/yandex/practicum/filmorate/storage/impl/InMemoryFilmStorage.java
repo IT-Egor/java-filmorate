@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.utility.Validator;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -41,6 +42,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.put(film.getId(), film);
         log.info("Film with id {} updated", film.getId());
         return film;
+    }
+
+    @Override
+    public Optional<Film> findFilm(long id) {
+        return Optional.ofNullable(films.get(id));
     }
 
     private long getNextId() {

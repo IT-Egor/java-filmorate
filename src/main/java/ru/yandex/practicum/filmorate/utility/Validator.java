@@ -16,13 +16,6 @@ public class Validator {
     }
 
     public static void validateFilm(Film film) {
-        if (film.getName() == null
-                || film.getDescription() == null
-                || film.getDuration() == null
-                || film.getReleaseDate() == null) {
-            log.error("Film have null values");
-            throw new ValidationException("Film have null values");
-        }
         if (film.getName().isBlank()) {
             log.error("Film name is null or empty");
             throw new ValidationException("Film name cannot be empty");
