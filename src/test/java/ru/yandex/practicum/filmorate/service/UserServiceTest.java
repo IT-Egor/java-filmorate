@@ -71,8 +71,8 @@ class UserServiceTest {
         userService.makeFriends(user.getId(), user3.getId());
         userService.makeFriends(user2.getId(), user3.getId());
         userService.makeFriends(user2.getId(), user4.getId());
-        assertArrayEquals(new Long[]{user3.getId()}, userService.commonFriends(user.getId(), user2.getId()).toArray());
-        assertArrayEquals(new Long[]{user2.getId()}, userService.commonFriends(user.getId(), user3.getId()).toArray());
-        assertArrayEquals(new Long[]{user2.getId()}, userService.commonFriends(user.getId(), user4.getId()).toArray());
+        assertArrayEquals(new User[]{user3}, userService.commonFriends(user.getId(), user2.getId()).toArray());
+        assertArrayEquals(new User[]{user2}, userService.commonFriends(user.getId(), user3.getId()).toArray());
+        assertArrayEquals(new User[]{user2}, userService.commonFriends(user.getId(), user4.getId()).toArray());
     }
 }

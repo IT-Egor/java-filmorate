@@ -57,49 +57,56 @@ class FilmServiceTest {
 
     @Test
     void shouldAddLike() {
-        Film film = filmStorage.findFilm(1).get();
+        Film film = filmStorage.findFilm(1);
         User user = userStorage.findUser(1);
-        filmService.addLike(film, user);
+        filmService.addLike(film.getId(), user.getId());
         assertEquals(1, film.getLikesCount());
         assertTrue(film.getLikedUsersIds().contains(user.getId()));
     }
 
     @Test
     void shouldNotAddLikeIfUserNotFound() {
-        Film film = filmStorage.findFilm(1).get();
+        Film film = filmStorage.findFilm(1);
         film.setLikedUsersIds(new HashSet<>()); // если тест выполнится не в том порядке
         User user = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
-        assertThrows(NotFoundException.class, () -> filmService.addLike(film, user));
+        assertThrows(NotFoundException.class, () ->
+                filmService.addLike(film.getId(), user.getId()));
         assertEquals(0, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(user.getId()));
     }
 
     @Test
     void shouldNotAddLikeIfFilmNotFound() {
-        Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
+        Film film = new Film(0,
+                "name",
+                "description",
+                LocalDate.now(),
+                Duration.ofMinutes(120));
         User user = userStorage.findUser(1);
-        assertThrows(NotFoundException.class, () -> filmService.addLike(film, user));
+        assertThrows(NotFoundException.class, () ->
+                filmService.addLike(film.getId(), user.getId()));
         assertEquals(0, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(user.getId()));
     }
 
     @Test
     void shouldRemoveLike() {
-        Film film = filmStorage.findFilm(1).get();
+        Film film = filmStorage.findFilm(1);
         User user = userStorage.findUser(1);
-        filmService.addLike(film, user);
-        filmService.removeLike(film, user);
+        filmService.addLike(film.getId(), user.getId());
+        filmService.removeLike(film.getId(), user.getId());
         assertEquals(0, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(user.getId()));
     }
 
     @Test
     void shouldNotRemoveLikeIfUserNotFound() {
-        Film film = filmStorage.findFilm(1).get();
+        Film film = filmStorage.findFilm(1);
         User user = userStorage.findUser(1);
-        filmService.addLike(film, user);
+        filmService.addLike(film.getId(), user.getId());
         User unexistingUser = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
-        assertThrows(NotFoundException.class, () -> filmService.removeLike(film, unexistingUser));
+        assertThrows(NotFoundException.class, () ->
+                filmService.removeLike(film.getId(), unexistingUser.getId()));
         assertEquals(1, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(unexistingUser.getId()));
     }
@@ -108,7 +115,8 @@ class FilmServiceTest {
     void shouldNotRemoveLikeIfFilmNotFound() {
         Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
         User user = userStorage.findUser(1);
-        assertThrows(NotFoundException.class, () -> filmService.removeLike(film, user));
+        assertThrows(NotFoundException.class, () ->
+                filmService.removeLike(film.getId(), user.getId()));
         assertEquals(0, film.getLikesCount());
         assertFalse(film.getLikedUsersIds().contains(user.getId()));
     }
@@ -119,13 +127,13 @@ class FilmServiceTest {
 
         for (int i = FILMS_NUMBER; i > 0 ; i--) {
             for (int j = i - filmsAndUsersDiff; j > 0; j--) {
-                Film film = filmStorage.findFilm(i).get();
+                Film film = filmStorage.findFilm(i);
                 User user = userStorage.findUser(j);
-                filmService.addLike(film, user);
+                filmService.addLike(film.getId(), user.getId());
             }
         }
 
-        List<Long> mostPopularFilmsIds = filmService.getMostPopularFilms().stream().map(Film::getId).toList();
+        List<Long> mostPopularFilmsIds = filmService.getMostPopularFilms(10).stream().map(Film::getId).toList();
         List<Long> expectedMostPopularFilmsIds = new ArrayList<>(List.of(20L, 19L, 18L, 17L, 16L, 15L, 14L, 13L, 12L, 11L));
         assertEquals(expectedMostPopularFilmsIds, mostPopularFilmsIds);
     }
