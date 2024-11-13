@@ -16,6 +16,13 @@ public class Validator {
     }
 
     public static void validateFilm(Film film) {
+        if (film.getName() == null
+                || film.getDescription() == null
+                || film.getDuration() == null
+                || film.getReleaseDate() == null) {
+            log.error("Film have null values");
+            throw new ValidationException("Film have null values");
+        }
         if (film.getName().isBlank()) {
             log.error("Film name is null or empty");
             throw new ValidationException("Film name cannot be empty");
@@ -35,6 +42,12 @@ public class Validator {
     }
 
     public static void validateUser(User user) {
+        if (user.getLogin() == null
+                || user.getEmail() == null
+                || user.getBirthday() == null) {
+            log.error("User has null values");
+            throw new ValidationException("User has null values");
+        }
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Email is not valid");
             throw new ValidationException("Email is not valid");
@@ -47,7 +60,7 @@ public class Validator {
             log.error(("Birthday is in the future"));
             throw new ValidationException("Birthday cannot be in future");
         }
-        if (user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("The username was changed to login '{}'", user.getLogin());
         }
