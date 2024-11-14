@@ -17,8 +17,7 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> getFilms() {
-        throw new RuntimeException();
-        //return filmService.getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @PostMapping
