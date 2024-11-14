@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 
@@ -14,22 +13,21 @@ import java.util.Collection;
 @Slf4j
 @AllArgsConstructor
 public class FilmController {
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
     @GetMapping
     public Collection<Film> getFilms() {
-        return filmStorage.getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        return filmStorage.addFilm(film);
+        return filmService.saveFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        return filmStorage.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")

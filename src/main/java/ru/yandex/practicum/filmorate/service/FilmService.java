@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -33,5 +34,19 @@ public class FilmService {
                 .sorted(Comparator.comparing(Film::getLikesCount).reversed())
                 .limit(filmsSelectionLength)
                 .toList();
+    }
+
+    public Film saveFilm(Film film) {
+        Validator.validateFilm(film);
+        return filmStorage.addFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        Validator.validateFilm(film);
+        return filmStorage.updateFilm(film);
+    }
+
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
     }
 }
