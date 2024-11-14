@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
 
 import java.time.LocalDate;
@@ -26,7 +25,7 @@ class InMemoryUserStorageTest {
     @Test
     void shouldAddUser() {
         userStorage.addUser(user);
-        assertEquals(userStorage.getUsers().toString(), List.of(user).toString());
+        assertEquals(userStorage.getAllUsers().toString(), List.of(user).toString());
     }
 
     @Test
@@ -45,7 +44,7 @@ class InMemoryUserStorageTest {
                 user.getName(),
                 LocalDate.now()));
 
-        List<Long> ids = userStorage.getUsers().stream().map(User::getId).toList();
+        List<Long> ids = userStorage.getAllUsers().stream().map(User::getId).toList();
         assertEquals(ids.get(0), ids.get(1) - 1);
         assertEquals(ids.get(1), ids.get(2) - 1);
     }
@@ -62,12 +61,12 @@ class InMemoryUserStorageTest {
         updatedUser.setName("updatedUser");
 
         userStorage.updateUser(updatedUser);
-        assertEquals(userStorage.getUsers().toString(), List.of(updatedUser).toString());
+        assertEquals(userStorage.getAllUsers().toString(), List.of(updatedUser).toString());
     }
 
     @Test
     void shouldReturnEmptyListWhenNoUsersFound() {
-        assertEquals(0, userStorage.getUsers().size());
+        assertEquals(0, userStorage.getAllUsers().size());
     }
 
     @Test

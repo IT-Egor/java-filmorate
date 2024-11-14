@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
+import ru.yandex.practicum.filmorate.utility.Validator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,5 +36,28 @@ public class UserService {
         Set<Long> commonFriends = new HashSet<>(user1.getFriends());
         commonFriends.retainAll(user2.getFriends());
         return userStorage.findUsers(commonFriends);
+    }
+
+    public Collection<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    public User saveUser(User user) {
+        Validator.validateUser(user);
+        return userStorage.addUser(user);
+    }
+
+    public User updateUser(User user) {
+        Validator.validateUser(user);
+        return userStorage.updateUser(user);
+    }
+
+    public User findUser(Long id) {
+
+        return userStorage.findUser(id);
+    }
+
+    public Collection<User> findUsers(Collection<Long> ids) {
+        return userStorage.findUsers(ids);
     }
 }
