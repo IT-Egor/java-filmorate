@@ -20,14 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmServiceTest {
     private static FilmService filmService;
-    private static UserStorage userStorage;
-    private static FilmStorage filmStorage;
+    private static UserService userService;
     private static final int USERS_NUMBER = 15;
     private static final int FILMS_NUMBER = 20;
 
     @BeforeAll
     static void setUpUsers() {
-        userStorage = new InMemoryUserStorage();
+        UserStorage userStorage = new InMemoryUserStorage();
         for (int i = 1; i <= USERS_NUMBER; i++) {
             userStorage.addUser(
                     new User(
@@ -39,8 +38,9 @@ class FilmServiceTest {
                     )
             );
         }
+        userService = new UserService(userStorage);
 
-        filmStorage = new InMemoryFilmStorage();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
         for (int i = 1; i <= FILMS_NUMBER; i++) {
             filmStorage.addFilm(
                     new Film(
@@ -52,13 +52,13 @@ class FilmServiceTest {
                     )
             );
         }
-        filmService = new FilmService(filmStorage, userStorage);
+        filmService = new FilmService(filmStorage, userService);
     }
 
     @Test
     void shouldAddLike() {
-        Film film = filmStorage.findFilm(1);
-        User user = userStorage.findUser(1);
+        Film film = filmService.findFilm(1L);
+        User user = userService.findUser(1L);
         filmService.addLike(film.getId(), user.getId());
         assertEquals(1, film.getLikesCount());
         assertTrue(film.getLikedUsersIds().contains(user.getId()));
@@ -66,7 +66,7 @@ class FilmServiceTest {
 
     @Test
     void shouldNotAddLikeIfUserNotFound() {
-        Film film = filmStorage.findFilm(1);
+        Film film = filmService.findFilm(1L);
         film.setLikedUsersIds(new HashSet<>()); // если тест выполнится не в том порядке
         User user = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
         assertThrows(NotFoundException.class, () ->
@@ -82,7 +82,7 @@ class FilmServiceTest {
                 "description",
                 LocalDate.now(),
                 Duration.ofMinutes(120));
-        User user = userStorage.findUser(1);
+        User user = userService.findUser(1L);
         assertThrows(NotFoundException.class, () ->
                 filmService.addLike(film.getId(), user.getId()));
         assertEquals(0, film.getLikesCount());
@@ -91,8 +91,8 @@ class FilmServiceTest {
 
     @Test
     void shouldRemoveLike() {
-        Film film = filmStorage.findFilm(1);
-        User user = userStorage.findUser(1);
+        Film film = filmService.findFilm(1L);
+        User user = userService.findUser(1L);
         filmService.addLike(film.getId(), user.getId());
         filmService.removeLike(film.getId(), user.getId());
         assertEquals(0, film.getLikesCount());
@@ -101,8 +101,8 @@ class FilmServiceTest {
 
     @Test
     void shouldNotRemoveLikeIfUserNotFound() {
-        Film film = filmStorage.findFilm(1);
-        User user = userStorage.findUser(1);
+        Film film = filmService.findFilm(1L);
+        User user = userService.findUser(1L);
         filmService.addLike(film.getId(), user.getId());
         User unexistingUser = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
         assertThrows(NotFoundException.class, () ->
@@ -114,7 +114,7 @@ class FilmServiceTest {
     @Test
     void shouldNotRemoveLikeIfFilmNotFound() {
         Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
-        User user = userStorage.findUser(1);
+        User user = userService.findUser(1L);
         assertThrows(NotFoundException.class, () ->
                 filmService.removeLike(film.getId(), user.getId()));
         assertEquals(0, film.getLikesCount());
@@ -125,10 +125,10 @@ class FilmServiceTest {
     void shouldReturnMostPopularFilms() {
         int filmsAndUsersDiff = FILMS_NUMBER - USERS_NUMBER;
 
-        for (int i = FILMS_NUMBER; i > 0; i--) {
-            for (int j = i - filmsAndUsersDiff; j > 0; j--) {
-                Film film = filmStorage.findFilm(i);
-                User user = userStorage.findUser(j);
+        for (long i = FILMS_NUMBER; i > 0; i--) {
+            for (long j = i - filmsAndUsersDiff; j > 0; j--) {
+                Film film = filmService.findFilm(i);
+                User user = userService.findUser(j);
                 filmService.addLike(film.getId(), user.getId());
             }
         }

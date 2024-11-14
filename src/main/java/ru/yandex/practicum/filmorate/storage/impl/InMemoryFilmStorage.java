@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -41,11 +42,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilm(long id) {
-        if (!films.containsKey(id)) {
-            throw new NotFoundException(String.format("Film with id %d not found", id));
-        }
-        return films.get(id);
+    public Optional<Film> findFilm(long id) {
+        return Optional.ofNullable(films.get(id));
     }
 
     private long getNextId() {
