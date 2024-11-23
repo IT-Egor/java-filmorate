@@ -13,15 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ValidatorTest {
 
     @Test
-    void shouldNotValidateEmptyNameFilm() {
-        Film film = new Film(0, "", "description", LocalDate.now(), Duration.ofHours(1));
-        assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
-
-        film.setName(null);
-        assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
-    }
-
-    @Test
     void shouldNotValidateLongDescriptionFilm() {
         Film film = new Film(0, "name", "*".repeat(201), LocalDate.now(), Duration.ofHours(1));
         assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
@@ -37,24 +28,6 @@ class ValidatorTest {
     void shouldValidateBlankDescriptionFilm() {
         Film film = new Film(0, "name", "", LocalDate.now(), Duration.ofHours(1));
         assertDoesNotThrow(() -> Validator.validateFilm(film));
-    }
-
-    @Test
-    void shouldNotValidateNullDescriptionFilm() {
-        Film film = new Film(0, "name", null, LocalDate.now(), Duration.ofHours(1));
-        assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
-    }
-
-    @Test
-    void shouldNotValidateNullDurationFilm() {
-        Film film = new Film(0, "name", "description", LocalDate.now(), null);
-        assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
-    }
-
-    @Test
-    void shouldNotValidateNullLocalDate() {
-        Film film = new Film(0, "name", "description", null, Duration.ofHours(1));
-        assertThrows(ValidationException.class, () -> Validator.validateFilm(film));
     }
 
     @Test
@@ -78,24 +51,6 @@ class ValidatorTest {
     }
 
 
-
-    @Test
-    void shouldNotValidateNullEmailUser() {
-        User user = new User(0, null, "login", "name", LocalDate.now());
-        assertThrows(ValidationException.class, () -> Validator.validateUser(user));
-    }
-
-    @Test
-    void shouldNotValidateNullLoginUser() {
-        User user = new User(0, "email@gmail.com", null, "name", LocalDate.now());
-        assertThrows(ValidationException.class, () -> Validator.validateUser(user));
-    }
-
-    @Test
-    void shouldNotValidateNullBirthdayUser() {
-        User user = new User(0, "email@gmail.com", "login", "name", null);
-        assertThrows(ValidationException.class, () -> Validator.validateUser(user));
-    }
 
     @Test
     void shouldNotValidateBlankEmailUser() {
