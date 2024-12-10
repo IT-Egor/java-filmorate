@@ -1,9 +1,7 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -13,7 +11,7 @@ import java.util.Set;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class Film {
+public class FilmDTO {
     @NonNull
     private long id;
     @NonNull

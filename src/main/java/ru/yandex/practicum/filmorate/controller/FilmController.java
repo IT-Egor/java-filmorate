@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -16,22 +17,22 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> getFilms() {
+    public Collection<FilmDTO> getFilms() {
         return filmService.getAllFilms();
     }
 
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable Long id) {
+    public FilmDTO getFilm(@PathVariable Long id) {
         return filmService.findFilm(id);
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
+    public FilmDTO addFilm(@RequestBody Film film) {
         return filmService.saveFilm(film);
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
+    public FilmDTO updateFilm(@RequestBody Film film) {
         return filmService.updateFilm(film);
     }
 
@@ -46,7 +47,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getMostPopularFilms(@RequestParam(required = false, defaultValue = "10", value = "count") int count) {
+    public Collection<FilmDTO> getMostPopularFilms(@RequestParam(required = false, defaultValue = "10", value = "count") int count) {
         return filmService.getMostPopularFilms(count);
     }
 }

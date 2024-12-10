@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -57,7 +58,7 @@ class FilmServiceTest {
 
     @Test
     void shouldAddLike() {
-        Film film = filmService.findFilm(1L);
+        FilmDTO film = filmService.findFilm(1L);
         User user = userService.findUser(1L);
         filmService.addLike(film.getId(), user.getId());
         assertEquals(1, film.getLikesCount());
@@ -66,7 +67,7 @@ class FilmServiceTest {
 
     @Test
     void shouldNotAddLikeIfUserNotFound() {
-        Film film = filmService.findFilm(1L);
+        FilmDTO film = filmService.findFilm(1L);
         film.setLikedUsersIds(new HashSet<>()); // если тест выполнится не в том порядке
         User user = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
         assertThrows(NotFoundException.class, () ->
@@ -77,7 +78,7 @@ class FilmServiceTest {
 
     @Test
     void shouldNotAddLikeIfFilmNotFound() {
-        Film film = new Film(0,
+        FilmDTO film = new FilmDTO(0,
                 "name",
                 "description",
                 LocalDate.now(),
@@ -91,7 +92,7 @@ class FilmServiceTest {
 
     @Test
     void shouldRemoveLike() {
-        Film film = filmService.findFilm(1L);
+        FilmDTO film = filmService.findFilm(1L);
         User user = userService.findUser(1L);
         filmService.addLike(film.getId(), user.getId());
         filmService.removeLike(film.getId(), user.getId());
@@ -101,7 +102,7 @@ class FilmServiceTest {
 
     @Test
     void shouldNotRemoveLikeIfUserNotFound() {
-        Film film = filmService.findFilm(1L);
+        FilmDTO film = filmService.findFilm(1L);
         User user = userService.findUser(1L);
         filmService.addLike(film.getId(), user.getId());
         User unexistingUser = new User(0, "email@mail.ru", "login", "name", LocalDate.now());
@@ -113,7 +114,7 @@ class FilmServiceTest {
 
     @Test
     void shouldNotRemoveLikeIfFilmNotFound() {
-        Film film = new Film(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
+        FilmDTO film = new FilmDTO(0, "name", "description", LocalDate.now(), Duration.ofMinutes(120));
         User user = userService.findUser(1L);
         assertThrows(NotFoundException.class, () ->
                 filmService.removeLike(film.getId(), user.getId()));
@@ -127,13 +128,13 @@ class FilmServiceTest {
 
         for (long i = FILMS_NUMBER; i > 0; i--) {
             for (long j = i - filmsAndUsersDiff; j > 0; j--) {
-                Film film = filmService.findFilm(i);
+                FilmDTO film = filmService.findFilm(i);
                 User user = userService.findUser(j);
                 filmService.addLike(film.getId(), user.getId());
             }
         }
 
-        List<Long> mostPopularFilmsIds = filmService.getMostPopularFilms(10).stream().map(Film::getId).toList();
+        List<Long> mostPopularFilmsIds = filmService.getMostPopularFilms(10).stream().map(FilmDTO::getId).toList();
         List<Long> expectedMostPopularFilmsIds = new ArrayList<>(List.of(20L, 19L, 18L, 17L, 16L, 15L, 14L, 13L, 12L, 11L));
         assertEquals(expectedMostPopularFilmsIds, mostPopularFilmsIds);
     }
