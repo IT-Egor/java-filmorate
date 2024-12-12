@@ -19,8 +19,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class FilmService {
-    @Qualifier("filmDbStorage")
-    private final FilmStorage filmStorage;
+    private final @Qualifier("filmDbStorage") FilmStorage filmStorage;
     private final UserService userService;
 
     public void addLike(Long filmId, Long userId) {

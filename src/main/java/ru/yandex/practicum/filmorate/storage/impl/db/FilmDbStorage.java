@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.impl.db;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
@@ -11,41 +11,44 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository("filmDbStorage")
-public class FilmDbStorage implements FilmStorage {
-    private final String insertQuery = "INSERT INTO films (name, description, release_date, duration) VALUES (?, ?, ?, ?)";
-    private final String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ? WHERE id = ?";
-    private final String findAllQuery = "SELECT * FROM films";
-    private final String findByIdQuery = "SELECT * FROM films WHERE id = ?";
-
-    private final JdbcTemplate jdbc;
-    private final RowMapper<Film> mapper;
+public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
-        this.jdbc = jdbc;
-        this.mapper = mapper;
+        super(jdbc, mapper);
     }
 
     @Override
     public Collection<Film> getAllFilms() {
-        return jdbc.query(findAllQuery, mapper);
+        String findAllQuery = "SELECT * FROM films";
+        return findMany(findAllQuery);
     }
 
     @Override
     public Optional<Film> findFilm(long id) {
-        try {
-            return Optional.ofNullable(jdbc.queryForObject(findByIdQuery, mapper, id));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        String findByIdQuery = "SELECT * FROM films WHERE id = ?";
+        return findOne(findByIdQuery, id);
     }
 
     @Override
     public Film addFilm(Film film) {
-        throw new IllegalArgumentException("Not implemented");
+        String insertQuery = "INSERT INTO films (name, description, release_date, duration) VALUES (?, ?, ?, ?)";
+        long id = merge(insertQuery,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration().toMinutes());
+        return findFilm(id).orElseThrow(() -> new NotFoundException("Film not found"));
     }
 
     @Override
     public Film updateFilm(Film film) {
-        throw new IllegalArgumentException("Not implemented");
+        String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ? WHERE id = ?";
+        long id = merge(updateQuery,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration().toMinutes(),
+                film.getId());
+        return findFilm(id).orElseThrow(() -> new NotFoundException("Film not found"));
     }
 }
