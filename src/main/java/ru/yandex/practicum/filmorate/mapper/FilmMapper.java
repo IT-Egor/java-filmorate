@@ -14,7 +14,6 @@ public class FilmMapper {
         dto.setDescription(film.getDescription());
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
-        dto.setLikedUsersIds(film.getLikedUsersIds());
         return dto;
     }
 }

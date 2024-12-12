@@ -24,14 +24,6 @@ public class FilmDTO {
     private Duration duration;
     private Set<Long> likedUsersIds = new HashSet<>();
 
-    public void addLike(User user) {
-        likedUsersIds.add(user.getId());
-    }
-
-    public void removeLike(User user) {
-        likedUsersIds.remove(user.getId());
-    }
-
     public long getLikesCount() {
         return likedUsersIds.size();
     }

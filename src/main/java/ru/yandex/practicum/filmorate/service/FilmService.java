@@ -23,23 +23,26 @@ public class FilmService {
     private final UserService userService;
 
     public void addLike(Long filmId, Long userId) {
-        FilmDTO filmDTO = findFilm(filmId);
-        User user = userService.findUser(userId);
-        filmDTO.addLike(user);
+//        FilmDTO filmDTO = findFilm(filmId);
+//        User user = userService.findUser(userId);
+//        filmDTO.addLike(user);
+        throw new RuntimeException("Not implemented");
     }
 
     public void removeLike(Long filmId, Long userId) {
-        User user = userService.findUser(userId);
-        FilmDTO filmDTO = findFilm(filmId);
-        filmDTO.removeLike(user);
+//        User user = userService.findUser(userId);
+//        FilmDTO filmDTO = findFilm(filmId);
+//        filmDTO.removeLike(user);
+        throw new RuntimeException("Not implemented");
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparing(Film::getLikesCount).reversed())
-                .limit(filmsSelectionLength)
-                .map(FilmMapper::mapToFilmDTO)
-                .toList();
+//        return filmStorage.getAllFilms().stream()
+//                .sorted(Comparator.comparing(Film::getLikesCount).reversed())
+//                .limit(filmsSelectionLength)
+//                .map(FilmMapper::mapToFilmDTO)
+//                .toList();
+        throw new RuntimeException("Not implemented");
     }
 
     public FilmDTO saveFilm(Film film) {

@@ -7,12 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
-@RequiredArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class Film {
     @NonNull
     private long id;
@@ -24,17 +22,4 @@ public class Film {
     private LocalDate releaseDate;
     @NonNull
     private Duration duration;
-    private Set<Long> likedUsersIds = new HashSet<>();
-
-    public void addLike(User user) {
-        likedUsersIds.add(user.getId());
-    }
-
-    public void removeLike(User user) {
-        likedUsersIds.remove(user.getId());
-    }
-
-    public long getLikesCount() {
-        return likedUsersIds.size();
-    }
 }
