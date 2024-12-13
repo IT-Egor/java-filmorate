@@ -39,6 +39,10 @@ public class Validator {
             log.error("Film duration is not positive");
             throw new ValidationException("Film duration should be positive");
         }
+        if (film.getMpa() == null || film.getMpa().getId() == null) {
+            log.error("Film mpa is null");
+            throw new ValidationException("Film mpa is null");
+        }
     }
 
     public static void validateUser(User user) {

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.MpaDTO;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
@@ -45,7 +47,8 @@ public class FilmService {
         throw new RuntimeException("Not implemented");
     }
 
-    public FilmDTO saveFilm(Film film) {
+    public FilmDTO saveFilm(FilmDTO filmDTO) {
+        Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
         return FilmMapper.mapToFilmDTO(filmStorage.addFilm(film));
     }

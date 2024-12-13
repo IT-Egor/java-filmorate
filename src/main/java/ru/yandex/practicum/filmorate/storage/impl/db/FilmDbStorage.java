@@ -31,24 +31,26 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        String insertQuery = "INSERT INTO films (name, description, release_date, duration) VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO films (name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
         long id = merge(insertQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
-                film.getDuration().toMinutes());
+                film.getDuration().toMinutes(),
+                film.getMpa().getId());
         return findFilm(id).orElseThrow(() -> new NotFoundException("Film not found"));
     }
 
     @Override
     public Film updateFilm(Film film) {
-        String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ? WHERE id = ?";
+        String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? WHERE id = ?";
         long id = merge(updateQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
-                film.getId());
+                film.getId(),
+                film.getMpa().getId());
         return findFilm(id).orElseThrow(() -> new NotFoundException("Film not found"));
     }
 }

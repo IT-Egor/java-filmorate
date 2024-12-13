@@ -27,8 +27,8 @@ public class FilmController {
     }
 
     @PostMapping
-    public FilmDTO addFilm(@RequestBody Film film) {
-        return filmService.saveFilm(film);
+    public FilmDTO addFilm(@RequestBody FilmDTO filmDTO) {
+        return filmService.saveFilm(filmDTO);
     }
 
     @PutMapping

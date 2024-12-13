@@ -14,6 +14,21 @@ public class FilmMapper {
         dto.setDescription(film.getDescription());
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
+        if (film.getMpa() != null) {
+            dto.setMpa(MpaMapper.mapToDTO(film.getMpa()));
+        }
         return dto;
+    }
+
+    public static Film mapToFilm(FilmDTO dto) {
+        Film film = new Film();
+        film.setId(dto.getId());
+        film.setName(dto.getName());
+        film.setDescription(dto.getDescription());
+        film.setReleaseDate(dto.getReleaseDate());
+        film.setDuration(dto.getDuration());
+        film.setMpa(MpaMapper.mapToMpa(dto.getMpa()));
+
+        return film;
     }
 }
