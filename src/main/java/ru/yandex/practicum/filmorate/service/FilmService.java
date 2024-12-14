@@ -48,13 +48,13 @@ public class FilmService {
     public FilmDTO saveFilm(FilmDTO filmDTO) {
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        return FilmMapper.mapToFilmDTO(filmStorage.addFilm(film));
+        return findFilm(filmStorage.addFilm(film));
     }
 
     public FilmDTO updateFilm(FilmDTO filmDTO) {
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        return FilmMapper.mapToFilmDTO(filmStorage.updateFilm(film));
+        return findFilm(filmStorage.updateFilm(film));
     }
 
     public Collection<FilmDTO> getAllFilms() {
