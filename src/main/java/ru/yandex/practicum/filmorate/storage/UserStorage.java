@@ -8,9 +8,9 @@ import java.util.Optional;
 public interface UserStorage {
     Collection<User> getAllUsers();
 
-    User addUser(User user);
+    Long addUser(User user);
 
-    User updateUser(User user);
+    Long updateUser(User user);
 
     Optional<User> findUser(long id);
 }

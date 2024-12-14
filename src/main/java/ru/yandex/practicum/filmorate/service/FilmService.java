@@ -64,7 +64,7 @@ public class FilmService {
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
         if (filmStorage.updateFilm(film) == 0) {
-            throw new InternalServerException("Failed to update film");
+            throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
 
         filmGenreService.deleteFilmGenres(filmDTO.getId());

@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
+import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -16,18 +18,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<User> getUsers() {
+    public Collection<UserDTO> getUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public UserDTO createUser(@RequestBody MergeUserRequest userMerge) {
+        return userService.saveUser(userMerge);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+    public UserDTO updateUser(@RequestBody MergeUserRequest userMerge) {
+        return userService.updateUser(userMerge);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
@@ -42,8 +44,9 @@ public class UserController {
 
     @GetMapping("/{id}/friends")
     public Collection<User> getFriends(@PathVariable Long id) {
-        User user = userService.findUser(id);
-        return userService.findUsers(user.getFriends());
+//        User user = userService.findUser(id);
+//        return userService.findUsers(user.getFriends());
+        throw new RuntimeException("Not implemented");
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
