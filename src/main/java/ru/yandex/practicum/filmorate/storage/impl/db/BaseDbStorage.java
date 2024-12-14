@@ -37,12 +37,16 @@ public abstract class BaseDbStorage<T> {
         return rowsDeleted > 0;
     }
 
-    protected long merge(String mergeQuery, Object... params) {
+    protected long update(String updateQuery, Object... params) {
+        return jdbc.update(updateQuery, params);
+    }
+
+    protected long insert(String insertQuery, Object... params) {
         try {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             jdbc.update(connection -> {
                 PreparedStatement ps = connection
-                        .prepareStatement(mergeQuery, Statement.RETURN_GENERATED_KEYS);
+                        .prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
                 for (int paramIndex = 0; paramIndex < params.length; paramIndex++) {
                     ps.setObject(paramIndex + 1, params[paramIndex]);
                 }
@@ -54,10 +58,7 @@ public abstract class BaseDbStorage<T> {
             if (id != null) {
                 return id;
             } else {
-                int methodBeginIndex = 0;
-                int methodEndIndex = 6;
-                throw new InternalServerException(String.format("Failed to %s data",
-                        mergeQuery.substring(methodBeginIndex, methodEndIndex).toLowerCase()));
+                throw new InternalServerException("Failed to insert data");
             }
         } catch (DataIntegrityViolationException e) {
             throw new BadRequestException("Data integrity violation");

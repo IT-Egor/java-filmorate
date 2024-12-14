@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
@@ -62,19 +63,24 @@ public class FilmService {
         filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        Long updatedFilmId = filmStorage.updateFilm(film);
+        if (filmStorage.updateFilm(film) == 0) {
+            throw new InternalServerException("Failed to update film");
+        }
 
-        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), updatedFilmId);
+        filmGenreService.deleteFilmGenres(filmDTO.getId());
+        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), filmDTO.getId());
 
-        return findFilm(updatedFilmId);
+        return findFilm(filmDTO.getId());
     }
 
     public Collection<FilmDTO> getAllFilms() {
         return filmStorage.getAllFilms().stream().map(film -> {
             Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
             film.setMpa(mpa);
+
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
             film.setGenres(genres);
+
             return FilmMapper.mapToFilmDTO(film);
         }).toList();
     }

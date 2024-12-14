@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.impl.db;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
@@ -32,7 +31,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     @Override
     public Long addFilm(Film film) {
         String insertQuery = "INSERT INTO films (name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
-        return merge(insertQuery,
+        return insert(insertQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
@@ -43,7 +42,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     @Override
     public Long updateFilm(Film film) {
         String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? WHERE id = ?";
-        return merge(updateQuery,
+        return update(updateQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
