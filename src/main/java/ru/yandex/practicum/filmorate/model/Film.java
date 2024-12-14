@@ -20,8 +20,4 @@ public class Film {
     private Mpa mpa;
     private List<Genre> genres;
     private List<Like> likes;
-
-    public int getLikesCount() {
-        return likes.size();
-    }
 }

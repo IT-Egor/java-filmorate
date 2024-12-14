@@ -42,12 +42,10 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-//        return filmStorage.getAllFilms().stream()
-//                .sorted(Comparator.comparing(Film::getLikesCount).reversed())
-//                .limit(filmsSelectionLength)
-//                .map(FilmMapper::mapToFilmDTO)
-//                .toList();
-        throw new RuntimeException("Not implemented");
+        return getAllFilms().stream()
+                .sorted(Comparator.comparing(FilmDTO::getLikesCount).reversed())
+                .limit(filmsSelectionLength)
+                .toList();
     }
 
     public FilmDTO saveFilm(FilmDTO filmDTO) {

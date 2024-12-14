@@ -15,4 +15,8 @@ public class FilmDTO {
     private MpaDTO mpa;
     private List<GenreDTO> genres;
     private List<LikeDTO> likes;
+
+    public int getLikesCount() {
+        return likes.size();
+    }
 }
