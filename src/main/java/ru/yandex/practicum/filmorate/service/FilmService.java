@@ -22,6 +22,7 @@ public class FilmService {
     private final UserService userService;
     private final MpaService mpaService;
     private final FilmGenreService filmGenreService;
+    private final GenreService genreService;
 
     public void addLike(Long filmId, Long userId) {
 //        FilmDTO filmDTO = findFilm(filmId);
@@ -47,10 +48,13 @@ public class FilmService {
     }
 
     public FilmDTO saveFilm(FilmDTO filmDTO) {
+        filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
         Long addedFilmId = filmStorage.addFilm(film);
+
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
+
         return findFilm(addedFilmId);
     }
 
@@ -64,7 +68,7 @@ public class FilmService {
         return filmStorage.getAllFilms().stream().map(film -> {
             Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
             film.setMpa(mpa);
-            Set<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
+            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
             film.setGenres(genres);
             return FilmMapper.mapToFilmDTO(film);
         }).toList();
@@ -78,7 +82,7 @@ public class FilmService {
             Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
             film.setMpa(mpa);
 
-            Set<Genre> genres = filmGenreService.getGenresByFilmId(id);
+            List<Genre> genres = filmGenreService.getGenresByFilmId(id);
             film.setGenres(genres);
 
             return FilmMapper.mapToFilmDTO(film);

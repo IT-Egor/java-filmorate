@@ -7,10 +7,7 @@ import ru.yandex.practicum.filmorate.model.FilmGenre;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.impl.db.FilmGenreDbStorage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,11 +20,10 @@ public class FilmGenreService {
         filmGenreDbStorage.batchInsert(genres, filmId);
     }
 
-    public Set<Genre> getGenresByFilmId(Long filmId) {
-        Set<FilmGenre> filmGenres = new HashSet<>(filmGenreDbStorage.findAllByFilmId(filmId));
-        Set<Genre> genresDTO = filmGenres.stream().map(filmGenre ->
-            genreService.findGenreById(filmGenre.getGenreId())
-        ).collect(Collectors.toSet());
-        return genresDTO;
+    public List<Genre> getGenresByFilmId(Long filmId) {
+        List<FilmGenre> filmGenres = new ArrayList<>(filmGenreDbStorage.findAllByFilmId(filmId));
+        return filmGenres.stream().map(filmGenre ->
+                genreService.findGenreById(filmGenre.getGenreId())
+        ).toList();
     }
 }

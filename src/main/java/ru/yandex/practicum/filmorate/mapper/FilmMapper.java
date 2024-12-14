@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilmMapper {
@@ -17,7 +16,7 @@ public class FilmMapper {
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
         dto.setMpa(MpaMapper.mapToFilmMpaDTO(film.getMpa()));
-        dto.setGenres(film.getGenres().stream().map(GenreMapper::mapToGenreDTO).collect(Collectors.toSet()));
+        dto.setGenres(film.getGenres().stream().map(GenreMapper::mapToGenreDTO).toList());
         return dto;
     }
 
@@ -29,7 +28,7 @@ public class FilmMapper {
         film.setReleaseDate(dto.getReleaseDate());
         film.setDuration(dto.getDuration());
         film.setMpa(MpaMapper.mapFilmMpaDTOToMpa(dto.getMpa()));
-        film.setGenres(dto.getGenres().stream().map(GenreMapper::mapGenreDTOToGenre).collect(Collectors.toSet()));
+        film.setGenres(dto.getGenres().stream().map(GenreMapper::mapGenreDTOToGenre).toList());
         return film;
     }
 }
