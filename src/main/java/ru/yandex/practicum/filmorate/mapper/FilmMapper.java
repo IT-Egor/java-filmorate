@@ -17,6 +17,7 @@ public class FilmMapper {
         dto.setDuration(film.getDuration());
         dto.setMpa(MpaMapper.mapToMpaDTO(film.getMpa()));
         dto.setGenres(film.getGenres().stream().map(GenreMapper::mapToGenreDTO).toList());
+        dto.setLikes(film.getLikes().stream().map(LikeMapper::mapToLikeDTO).toList());
         return dto;
     }
 

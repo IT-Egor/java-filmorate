@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository
-public class GenreStorage extends BaseDbStorage<Genre> {
-    public GenreStorage(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
+public class GenreDbStorage extends BaseDbStorage<Genre> {
+    public GenreDbStorage(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
         super(jdbc, mapper);
     }
 

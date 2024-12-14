@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dto;
 
 import lombok.*;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,4 +14,5 @@ public class FilmDTO {
     private Duration duration;
     private MpaDTO mpa;
     private List<GenreDTO> genres;
+    private List<LikeDTO> likes;
 }

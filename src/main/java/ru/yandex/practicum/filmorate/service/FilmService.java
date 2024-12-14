@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.InternalServerException;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.utility.Validator;
@@ -24,19 +25,20 @@ public class FilmService {
     private final MpaService mpaService;
     private final FilmGenreService filmGenreService;
     private final GenreService genreService;
+    private final LikesService likesService;
 
     public void addLike(Long filmId, Long userId) {
-//        FilmDTO filmDTO = findFilm(filmId);
-//        User user = userService.findUser(userId);
-//        filmDTO.addLike(user);
-        throw new RuntimeException("Not implemented");
+        userService.findUser(userId);
+        findFilm(filmId);
+        likesService.addLike(filmId, userId);
     }
 
     public void removeLike(Long filmId, Long userId) {
-//        User user = userService.findUser(userId);
-//        FilmDTO filmDTO = findFilm(filmId);
-//        filmDTO.removeLike(user);
-        throw new RuntimeException("Not implemented");
+        userService.findUser(userId);
+        findFilm(filmId);
+        if (!likesService.removeLike(filmId, userId)) {
+            throw new BadRequestException(String.format("Film with id=%s already unliked by user with id=%s", filmId, userId));
+        }
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
@@ -56,6 +58,8 @@ public class FilmService {
 
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
 
+        film.setLikes(likesService.getFilmLikes(addedFilmId));
+
         return findFilm(addedFilmId);
     }
 
@@ -70,6 +74,8 @@ public class FilmService {
         filmGenreService.deleteFilmGenres(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), filmDTO.getId());
 
+        film.setLikes(likesService.getFilmLikes(filmDTO.getId()));
+
         return findFilm(filmDTO.getId());
     }
 
@@ -80,6 +86,8 @@ public class FilmService {
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
             film.setGenres(genres);
+
+            film.setLikes(likesService.getFilmLikes(film.getId()));
 
             return FilmMapper.mapToFilmDTO(film);
         }).toList();
@@ -95,6 +103,8 @@ public class FilmService {
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(id);
             film.setGenres(genres);
+
+            film.setLikes(likesService.getFilmLikes(id));
 
             return FilmMapper.mapToFilmDTO(film);
         } else {

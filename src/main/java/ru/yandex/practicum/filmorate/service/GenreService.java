@@ -6,8 +6,7 @@ import ru.yandex.practicum.filmorate.dto.GenreDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.impl.db.FilmGenreDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.db.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.impl.db.GenreDbStorage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +16,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class GenreService {
-    private final GenreStorage genreStorage;
+    private final GenreDbStorage genreStorage;
 
     public GenreDTO findGenreDTOById(Long id) {
         Genre genre = genreStorage.findById(id)
