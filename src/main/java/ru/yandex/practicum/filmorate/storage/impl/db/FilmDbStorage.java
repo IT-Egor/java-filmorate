@@ -49,8 +49,8 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
-                film.getId(),
-                film.getMpa().getId());
+                film.getMpa().getId(),
+                film.getId());
         return findFilm(id).orElseThrow(() -> new NotFoundException("Film not found"));
     }
 }

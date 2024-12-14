@@ -32,8 +32,8 @@ public class FilmController {
     }
 
     @PutMapping
-    public FilmDTO updateFilm(@RequestBody Film film) {
-        return filmService.updateFilm(film);
+    public FilmDTO updateFilm(@RequestBody FilmDTO filmDTO) {
+        return filmService.updateFilm(filmDTO);
     }
 
     @PutMapping("/{id}/like/{userId}")

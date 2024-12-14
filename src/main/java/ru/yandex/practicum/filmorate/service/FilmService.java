@@ -53,7 +53,8 @@ public class FilmService {
         return FilmMapper.mapToFilmDTO(filmStorage.addFilm(film));
     }
 
-    public FilmDTO updateFilm(Film film) {
+    public FilmDTO updateFilm(FilmDTO filmDTO) {
+        Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
         return FilmMapper.mapToFilmDTO(filmStorage.updateFilm(film));
     }
