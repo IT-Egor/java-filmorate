@@ -7,14 +7,14 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MpaMapper {
-    public static MpaDTO mapToFilmMpaDTO(Mpa mpa) {
+    public static MpaDTO mapToMpaDTO(Mpa mpa) {
         MpaDTO dto = new MpaDTO();
         dto.setId(mpa.getId());
         dto.setName(mpa.getName());
         return dto;
     }
 
-    public static Mpa mapFilmMpaDTOToMpa(MpaDTO dto) {
+    public static Mpa mapDTOToMpa(MpaDTO dto) {
         Mpa mpa = new Mpa();
         mpa.setId(dto.getId());
         mpa.setName(dto.getName());

@@ -15,7 +15,7 @@ public class FilmMapper {
         dto.setDescription(film.getDescription());
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
-        dto.setMpa(MpaMapper.mapToFilmMpaDTO(film.getMpa()));
+        dto.setMpa(MpaMapper.mapToMpaDTO(film.getMpa()));
         dto.setGenres(film.getGenres().stream().map(GenreMapper::mapToGenreDTO).toList());
         return dto;
     }
@@ -27,7 +27,7 @@ public class FilmMapper {
         film.setDescription(dto.getDescription());
         film.setReleaseDate(dto.getReleaseDate());
         film.setDuration(dto.getDuration());
-        film.setMpa(MpaMapper.mapFilmMpaDTOToMpa(dto.getMpa()));
+        film.setMpa(MpaMapper.mapDTOToMpa(dto.getMpa()));
         film.setGenres(dto.getGenres().stream().map(GenreMapper::mapGenreDTOToGenre).toList());
         return film;
     }

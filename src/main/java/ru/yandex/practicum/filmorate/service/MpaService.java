@@ -8,18 +8,26 @@ import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.impl.db.MpaDbStorage;
 
+import java.util.Collection;
+import java.util.Comparator;
+
 @Service
 @AllArgsConstructor
 public class MpaService {
     private final MpaDbStorage mpaDbStorage;
 
     public MpaDTO findDTOById(Long id) {
-        return MpaMapper.mapToFilmMpaDTO(mpaDbStorage.findById(id)
+        return MpaMapper.mapToMpaDTO(mpaDbStorage.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Mpa with id %s not found", id))));
     }
 
     public Mpa findMpaById(Long id) {
         return mpaDbStorage.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Mpa with id %s not found", id)));
+    }
+
+    public Collection<MpaDTO> getAllMpaDTOs() {
+        return mpaDbStorage.findAll().stream().map(MpaMapper::mapToMpaDTO)
+                .sorted(Comparator.comparing(MpaDTO::getId)).toList();
     }
 }
