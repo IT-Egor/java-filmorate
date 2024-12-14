@@ -10,18 +10,23 @@ import ru.yandex.practicum.filmorate.storage.impl.db.FilmGenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.impl.db.GenreStorage;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class GenreService {
     private final GenreStorage genreStorage;
-    private final FilmGenreDbStorage filmGenreDbStorage;
 
     public GenreDTO findGenreDTOById(Long id) {
         Genre genre = genreStorage.findById(id)
                 .orElseThrow(() -> new NotFoundException("Genre not found"));
         return GenreMapper.mapToGenreDTO(genre);
+    }
+
+    public Collection<GenreDTO> getAllGenreDTOs() {
+        return genreStorage.findAll().stream().map(GenreMapper::mapToGenreDTO).sorted(Comparator.comparing(GenreDTO::getId)).toList();
     }
 
     public Genre findGenreById(Long id) {
