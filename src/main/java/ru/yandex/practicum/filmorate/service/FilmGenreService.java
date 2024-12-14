@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.impl.db.FilmGenreDbStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,5 +24,9 @@ public class FilmGenreService {
         return filmGenres.stream().map(filmGenre ->
                 genreService.findGenreById(filmGenre.getGenreId())
         ).toList();
+    }
+
+    public boolean deleteFilmGenres(Long filmId) {
+        return filmGenreDbStorage.deleteFilmGenres(filmId);
     }
 }

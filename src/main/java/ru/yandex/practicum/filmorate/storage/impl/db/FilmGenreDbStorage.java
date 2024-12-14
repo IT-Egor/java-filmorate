@@ -45,4 +45,9 @@ public class FilmGenreDbStorage extends BaseDbStorage<FilmGenre> {
         String selectAllByFilmId = "SELECT * FROM film_genres WHERE film_id = ?";
         return findMany(selectAllByFilmId, filmId);
     }
+
+    public boolean deleteFilmGenres(Long filmId) {
+        String deleteFilmGenres = "DELETE FROM film_genres WHERE film_id = ?";
+        return delete(deleteFilmGenres, filmId);
+    }
 }

@@ -59,9 +59,14 @@ public class FilmService {
     }
 
     public FilmDTO updateFilm(FilmDTO filmDTO) {
+        filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        return findFilm(filmStorage.updateFilm(film));
+        Long updatedFilmId = filmStorage.updateFilm(film);
+
+        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), updatedFilmId);
+
+        return findFilm(updatedFilmId);
     }
 
     public Collection<FilmDTO> getAllFilms() {
