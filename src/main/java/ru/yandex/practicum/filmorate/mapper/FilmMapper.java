@@ -14,7 +14,7 @@ public class FilmMapper {
         dto.setDescription(film.getDescription());
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
-        dto.setMpa(MpaMapper.mapToDTO(film.getMpa()));
+        dto.setMpa(MpaMapper.mapToFilmMpaDTO(film.getMpa()));
         return dto;
     }
 
@@ -25,7 +25,7 @@ public class FilmMapper {
         film.setDescription(dto.getDescription());
         film.setReleaseDate(dto.getReleaseDate());
         film.setDuration(dto.getDuration());
-        film.setMpa(MpaMapper.mapToMpa(dto.getMpa()));
+        film.setMpa(MpaMapper.mapFilmMpaDTOToMpa(dto.getMpa()));
         return film;
     }
 }

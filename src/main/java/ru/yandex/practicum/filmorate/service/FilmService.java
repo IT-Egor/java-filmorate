@@ -4,18 +4,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dto.MpaDTO;
-import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Optional;
 
 @Service
@@ -23,6 +20,7 @@ import java.util.Optional;
 public class FilmService {
     private final @Qualifier("filmDbStorage") FilmStorage filmStorage;
     private final UserService userService;
+    private final MpaService mpaService;
 
     public void addLike(Long filmId, Long userId) {
 //        FilmDTO filmDTO = findFilm(filmId);
@@ -60,13 +58,20 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getAllFilms() {
-        return filmStorage.getAllFilms().stream().map(FilmMapper::mapToFilmDTO).toList();
+        return filmStorage.getAllFilms().stream().map(film -> {
+            Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
+            film.setMpa(mpa);
+            return FilmMapper.mapToFilmDTO(film);
+        }).toList();
     }
 
     public FilmDTO findFilm(Long id) {
         Optional<Film> filmOpt = filmStorage.findFilm(id);
         if (filmOpt.isPresent()) {
-            return FilmMapper.mapToFilmDTO(filmOpt.get());
+            Film film = filmOpt.get();
+            Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
+            film.setMpa(mpa);
+            return FilmMapper.mapToFilmDTO(film);
         } else {
             throw new NotFoundException("Film with id " + id + " not found");
         }
