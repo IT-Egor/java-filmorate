@@ -8,12 +8,12 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.utility.Validator;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor(onConstructor_ = {@Autowired})
@@ -21,6 +21,7 @@ public class FilmService {
     private final @Qualifier("filmDbStorage") FilmStorage filmStorage;
     private final UserService userService;
     private final MpaService mpaService;
+    private final FilmGenreService filmGenreService;
 
     public void addLike(Long filmId, Long userId) {
 //        FilmDTO filmDTO = findFilm(filmId);
@@ -48,7 +49,9 @@ public class FilmService {
     public FilmDTO saveFilm(FilmDTO filmDTO) {
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        return findFilm(filmStorage.addFilm(film));
+        Long addedFilmId = filmStorage.addFilm(film);
+        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
+        return findFilm(addedFilmId);
     }
 
     public FilmDTO updateFilm(FilmDTO filmDTO) {
@@ -61,6 +64,8 @@ public class FilmService {
         return filmStorage.getAllFilms().stream().map(film -> {
             Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
             film.setMpa(mpa);
+            Set<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
+            film.setGenres(genres);
             return FilmMapper.mapToFilmDTO(film);
         }).toList();
     }
@@ -69,8 +74,13 @@ public class FilmService {
         Optional<Film> filmOpt = filmStorage.findFilm(id);
         if (filmOpt.isPresent()) {
             Film film = filmOpt.get();
+
             Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
             film.setMpa(mpa);
+
+            Set<Genre> genres = filmGenreService.getGenresByFilmId(id);
+            film.setGenres(genres);
+
             return FilmMapper.mapToFilmDTO(film);
         } else {
             throw new NotFoundException("Film with id " + id + " not found");

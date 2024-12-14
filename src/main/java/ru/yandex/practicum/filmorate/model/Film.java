@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,5 @@ public class Film {
     private LocalDate releaseDate;
     private Duration duration;
     private Mpa mpa;
+    private Set<Genre> genres;
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class FilmDTO {
@@ -12,5 +13,6 @@ public class FilmDTO {
     private String description;
     private LocalDate releaseDate;
     private Duration duration;
-    private FilmMpaDTO mpa;
+    private MpaDTO mpa;
+    private Set<GenreDTO> genres;
 }
