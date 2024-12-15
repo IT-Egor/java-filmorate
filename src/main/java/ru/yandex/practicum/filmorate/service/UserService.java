@@ -4,45 +4,46 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
-import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.Validator;
+
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class UserService {
-    public final UserStorage userStorage;
+    private final UserStorage userStorage;
+    private final FriendService friendService;
 
     public void makeFriends(Long userId, Long friendId) {
-//        User user = findUser(userId);
-//        User friend = findUser(friendId);
-//        user.addFriend(friendId);
-//        friend.addFriend(userId);
-        throw new RuntimeException("Not implemented");
+        findUser(userId);
+        findUser(friendId);
+        friendService.addFriend(userId, friendId);
     }
 
     public void removeFriends(Long userId, Long friendId) {
-//        User user = findUser(userId);
-//        User friend = findUser(friendId);
-//        user.removeFriend(friendId);
-//        friend.removeFriend(userId);
-        throw new RuntimeException("Not implemented");
+        findUser(userId);
+        findUser(friendId);
+        friendService.removeFriend(userId, friendId);
     }
 
-    public Collection<User> commonFriends(Long userId1, Long userId2) {
-//        User user1 = findUser(userId1);
-//        User user2 = findUser(userId2);
-//        Set<Long> commonFriends = new HashSet<>(user1.getFriends());
-//        commonFriends.retainAll(user2.getFriends());
-//        return findUsers(commonFriends);
-        throw new RuntimeException("Not implemented");
+    public Collection<UserDTO> commonFriends(Long userId1, Long userId2) {
+        findUser(userId1);
+        findUser(userId2);
+        List<Long> user1Friends = new ArrayList<>(friendService.getUserFriends(userId1));
+        List<Long> user2Friends = new ArrayList<>(friendService.getUserFriends(userId2));
+        return user1Friends.stream().filter(user2Friends::contains).map(this::findUser).toList();
+    }
+
+    public Collection<UserDTO> getUserFriends(Long userId) {
+        findUser(userId);
+        return friendService.getUserFriends(userId).stream().map(this::findUser).toList();
     }
 
     public Collection<UserDTO> getAllUsers() {

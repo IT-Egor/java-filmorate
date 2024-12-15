@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS friends (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT REFERENCES users(id),
     friend_id BIGINT REFERENCES users(id),
-    is_approved BOOLEAN NOT NULL,
     UNIQUE (user_id, friend_id)
 );
 
