@@ -19,5 +19,4 @@ public class Film {
     private Duration duration;
     private Mpa mpa;
     private List<Genre> genres;
-    private List<Like> likes;
 }

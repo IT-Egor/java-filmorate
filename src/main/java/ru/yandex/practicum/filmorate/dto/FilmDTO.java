@@ -14,9 +14,4 @@ public class FilmDTO {
     private Duration duration;
     private MpaDTO mpa;
     private List<GenreDTO> genres;
-    private List<LikeDTO> likes;
-
-    public int getLikesCount() {
-        return likes.size();
-    }
 }

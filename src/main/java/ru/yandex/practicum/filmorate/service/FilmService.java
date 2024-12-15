@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
@@ -42,10 +43,18 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        return getAllFilms().stream()
-                .sorted(Comparator.comparing(FilmDTO::getLikesCount).reversed())
+        Map<Long, Long> filmsLikes = likesService.getFilmsLikesCount();
+        List<Long> mostPopularFilms = filmsLikes.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .map(Map.Entry::getKey)
                 .limit(filmsSelectionLength)
                 .toList();
+        return mostPopularFilms.stream().map(this::findFilm).toList();
+    }
+
+    public Collection<LikeDTO> getFilmLikes(Long filmId) {
+        findFilm(filmId);
+        return likesService.getFilmLikes(filmId);
     }
 
     public FilmDTO saveFilm(FilmDTO filmDTO) {
@@ -55,8 +64,6 @@ public class FilmService {
         Long addedFilmId = filmStorage.addFilm(film);
 
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
-
-        film.setLikes(likesService.getFilmLikes(addedFilmId));
 
         return findFilm(addedFilmId);
     }
@@ -72,8 +79,6 @@ public class FilmService {
         filmGenreService.deleteFilmGenres(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), filmDTO.getId());
 
-        film.setLikes(likesService.getFilmLikes(filmDTO.getId()));
-
         return findFilm(filmDTO.getId());
     }
 
@@ -84,8 +89,6 @@ public class FilmService {
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
             film.setGenres(genres);
-
-            film.setLikes(likesService.getFilmLikes(film.getId()));
 
             return FilmMapper.mapToFilmDTO(film);
         }).toList();
@@ -101,8 +104,6 @@ public class FilmService {
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(id);
             film.setGenres(genres);
-
-            film.setLikes(likesService.getFilmLikes(id));
 
             return FilmMapper.mapToFilmDTO(film);
         } else {

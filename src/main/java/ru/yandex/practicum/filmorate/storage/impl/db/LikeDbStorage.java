@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Like;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class LikeDbStorage extends BaseDbStorage<Like> {
@@ -26,5 +29,10 @@ public class LikeDbStorage extends BaseDbStorage<Like> {
     public boolean removeLikeFromFilm(Long filmId, Long userId) {
         String delete = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
         return delete(delete, filmId, userId);
+    }
+
+    public Collection<Like> getAllFilmsLikes() {
+        String selectAll = "SELECT * FROM likes";
+        return findMany(selectAll);
     }
 }
