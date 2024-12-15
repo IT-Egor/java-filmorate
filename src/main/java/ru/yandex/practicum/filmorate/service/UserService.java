@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserRepository;
 import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserService {
-    private final UserDbStorage userStorage;
+    private final UserRepository userRepository;
     private final FriendService friendService;
 
     public void makeFriends(Long userId, Long friendId) {
@@ -47,26 +47,26 @@ public class UserService {
     }
 
     public Collection<UserDTO> getAllUsers() {
-        return userStorage.getAllUsers().stream().map(UserMapper::mapUserToUserDTO).toList();
+        return userRepository.getAllUsers().stream().map(UserMapper::mapUserToUserDTO).toList();
     }
 
     public UserDTO saveUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
         Validator.validateUser(user);
-        return findUser(userStorage.addUser(user));
+        return findUser(userRepository.addUser(user));
     }
 
     public UserDTO updateUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
         Validator.validateUser(user);
-        if (userStorage.updateUser(user) == 0) {
+        if (userRepository.updateUser(user) == 0) {
             throw new NotFoundException(String.format("User with id=%s not found", user.getId()));
         }
         return findUser(user.getId());
     }
 
     public UserDTO findUser(Long id) {
-        Optional<User> userOpt = userStorage.findUser(id);
+        Optional<User> userOpt = userRepository.findUser(id);
         if (userOpt.isPresent()) {
             return UserMapper.mapUserToUserDTO(userOpt.get());
         } else {

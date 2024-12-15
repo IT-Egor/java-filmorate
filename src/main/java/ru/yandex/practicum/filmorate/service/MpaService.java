@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.dto.MpaDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.MpaDbStorage;
+import ru.yandex.practicum.filmorate.storage.MpaRepository;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,20 +14,20 @@ import java.util.Comparator;
 @Service
 @AllArgsConstructor
 public class MpaService {
-    private final MpaDbStorage mpaDbStorage;
+    private final MpaRepository mpaRepository;
 
     public MpaDTO findDTOById(Long id) {
-        return MpaMapper.mapToMpaDTO(mpaDbStorage.findById(id)
+        return MpaMapper.mapToMpaDTO(mpaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Mpa with id %s not found", id))));
     }
 
     public Mpa findMpaById(Long id) {
-        return mpaDbStorage.findById(id)
+        return mpaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Mpa with id %s not found", id)));
     }
 
     public Collection<MpaDTO> getAllMpaDTOs() {
-        return mpaDbStorage.findAll().stream().map(MpaMapper::mapToMpaDTO)
+        return mpaRepository.findAll().stream().map(MpaMapper::mapToMpaDTO)
                 .sorted(Comparator.comparing(MpaDTO::getId)).toList();
     }
 }

@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public class FilmGenreDbStorage extends BaseDbStorage<FilmGenre> {
-    public FilmGenreDbStorage(JdbcTemplate jdbc, RowMapper<FilmGenre> mapper) {
+public class FilmGenreRepository extends BaseRepository<FilmGenre> {
+    public FilmGenreRepository(JdbcTemplate jdbc, RowMapper<FilmGenre> mapper) {
         super(jdbc, mapper);
     }
 

@@ -8,8 +8,8 @@ import ru.yandex.practicum.filmorate.model.Like;
 import java.util.Collection;
 
 @Repository
-public class LikeDbStorage extends BaseDbStorage<Like> {
-    public LikeDbStorage(JdbcTemplate jdbc, RowMapper<Like> mapper) {
+public class LikeRepository extends BaseRepository<Like> {
+    public LikeRepository(JdbcTemplate jdbc, RowMapper<Like> mapper) {
         super(jdbc, mapper);
     }
 

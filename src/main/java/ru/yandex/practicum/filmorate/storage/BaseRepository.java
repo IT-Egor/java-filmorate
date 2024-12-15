@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @AllArgsConstructor
-public abstract class BaseDbStorage<T> {
+public abstract class BaseRepository<T> {
     protected final JdbcTemplate jdbc;
     protected final RowMapper<T> mapper;
 

@@ -8,10 +8,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.Optional;
 
-@Repository("filmDbStorage")
-public class FilmDbStorage extends BaseDbStorage<Film> {
+@Repository
+public class FilmRepository extends BaseRepository<Film> {
 
-    public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
+    public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
     }
 

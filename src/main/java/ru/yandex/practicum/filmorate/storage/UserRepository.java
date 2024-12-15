@@ -8,9 +8,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 import java.util.Optional;
 
-@Repository("userDbStorage")
-public class UserDbStorage extends BaseDbStorage<User> {
-    public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
+@Repository
+public class UserRepository extends BaseRepository<User> {
+    public UserRepository(JdbcTemplate jdbc, RowMapper<User> mapper) {
         super(jdbc, mapper);
     }
 

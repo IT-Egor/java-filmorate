@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
@@ -11,15 +10,15 @@ import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmRepository;
 import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.*;
 
 @Service
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@AllArgsConstructor
 public class FilmService {
-    private final FilmDbStorage filmStorage;
+    private final FilmRepository filmRepository;
     private final UserService userService;
     private final MpaService mpaService;
     private final FilmGenreService filmGenreService;
@@ -59,7 +58,7 @@ public class FilmService {
         filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        Long addedFilmId = filmStorage.addFilm(film);
+        Long addedFilmId = filmRepository.addFilm(film);
 
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
 
@@ -70,7 +69,7 @@ public class FilmService {
         filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
         Validator.validateFilm(film);
-        if (filmStorage.updateFilm(film) == 0) {
+        if (filmRepository.updateFilm(film) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
 
@@ -81,7 +80,7 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getAllFilms() {
-        return filmStorage.getAllFilms().stream().map(film -> {
+        return filmRepository.getAllFilms().stream().map(film -> {
             Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
             film.setMpa(mpa);
 
@@ -93,7 +92,7 @@ public class FilmService {
     }
 
     public FilmDTO findFilm(Long id) {
-        Optional<Film> filmOpt = filmStorage.findFilm(id);
+        Optional<Film> filmOpt = filmRepository.findFilm(id);
         if (filmOpt.isPresent()) {
             Film film = filmOpt.get();
 

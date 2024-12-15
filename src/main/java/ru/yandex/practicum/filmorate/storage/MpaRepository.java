@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository
-public class MpaDbStorage extends BaseDbStorage<Mpa> {
-    public MpaDbStorage(JdbcTemplate jdbc, RowMapper<Mpa> mapper) {
+public class MpaRepository extends BaseRepository<Mpa> {
+    public MpaRepository(JdbcTemplate jdbc, RowMapper<Mpa> mapper) {
         super(jdbc, mapper);
     }
 

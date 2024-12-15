@@ -8,8 +8,8 @@ import ru.yandex.practicum.filmorate.model.Friend;
 import java.util.Collection;
 
 @Repository
-public class FriendDbStorage extends BaseDbStorage<Friend> {
-    public FriendDbStorage(JdbcTemplate jdbc, RowMapper<Friend> mapper) {
+public class FriendRepository extends BaseRepository<Friend> {
+    public FriendRepository(JdbcTemplate jdbc, RowMapper<Friend> mapper) {
         super(jdbc, mapper);
     }
 
