@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
@@ -11,9 +10,8 @@ import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.*;
@@ -21,7 +19,7 @@ import java.util.*;
 @Service
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class FilmService {
-    private final @Qualifier("filmDbStorage") FilmStorage filmStorage;
+    private final FilmDbStorage filmStorage;
     private final UserService userService;
     private final MpaService mpaService;
     private final FilmGenreService filmGenreService;

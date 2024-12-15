@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Friend;
-import ru.yandex.practicum.filmorate.storage.impl.db.FriendDbStorage;
+import ru.yandex.practicum.filmorate.storage.FriendDbStorage;
 
 import java.util.Collection;
 

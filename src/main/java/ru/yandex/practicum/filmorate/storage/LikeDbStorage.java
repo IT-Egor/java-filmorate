@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.impl.db;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Like;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 public class LikeDbStorage extends BaseDbStorage<Like> {

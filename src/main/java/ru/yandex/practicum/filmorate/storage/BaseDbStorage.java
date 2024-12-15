@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.impl.db;
+package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

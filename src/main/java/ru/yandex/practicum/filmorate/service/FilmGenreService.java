@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.GenreDTO;
 import ru.yandex.practicum.filmorate.model.FilmGenre;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.impl.db.FilmGenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmGenreDbStorage;
 
 import java.util.*;
 

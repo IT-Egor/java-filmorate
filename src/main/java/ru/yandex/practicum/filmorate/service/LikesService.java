@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
 import ru.yandex.practicum.filmorate.model.Like;
-import ru.yandex.practicum.filmorate.storage.impl.db.LikeDbStorage;
+import ru.yandex.practicum.filmorate.storage.LikeDbStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

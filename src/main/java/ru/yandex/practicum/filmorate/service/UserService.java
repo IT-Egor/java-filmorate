@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import ru.yandex.practicum.filmorate.utility.Validator;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserService {
-    private final UserStorage userStorage;
+    private final UserDbStorage userStorage;
     private final FriendService friendService;
 
     public void makeFriends(Long userId, Long friendId) {

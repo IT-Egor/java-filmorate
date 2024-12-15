@@ -1,6 +1,5 @@
-package ru.yandex.practicum.filmorate.storage.impl.db;
+package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
