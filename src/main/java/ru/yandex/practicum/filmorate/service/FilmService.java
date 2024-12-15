@@ -57,7 +57,6 @@ public class FilmService {
     public FilmDTO saveFilm(FilmDTO filmDTO) {
         filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
-        Validator.validateFilm(film);
         Long addedFilmId = filmRepository.addFilm(film);
 
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
@@ -68,7 +67,6 @@ public class FilmService {
     public FilmDTO updateFilm(FilmDTO filmDTO) {
         filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
         Film film = FilmMapper.mapToFilm(filmDTO);
-        Validator.validateFilm(film);
         if (filmRepository.updateFilm(film) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }

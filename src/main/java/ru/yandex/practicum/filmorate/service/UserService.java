@@ -52,13 +52,11 @@ public class UserService {
 
     public UserDTO saveUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
-        Validator.validateUser(user);
         return findUser(userRepository.addUser(user));
     }
 
     public UserDTO updateUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
-        Validator.validateUser(user);
         if (userRepository.updateUser(user) == 0) {
             throw new NotFoundException(String.format("User with id=%s not found", user.getId()));
         }

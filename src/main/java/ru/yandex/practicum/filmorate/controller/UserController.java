@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,12 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDTO createUser(@RequestBody MergeUserRequest userMerge) {
+    public UserDTO createUser(@Valid @RequestBody MergeUserRequest userMerge) {
         return userService.saveUser(userMerge);
     }
 
     @PutMapping
-    public UserDTO updateUser(@RequestBody MergeUserRequest userMerge) {
+    public UserDTO updateUser(@Valid @RequestBody MergeUserRequest userMerge) {
         return userService.updateUser(userMerge);
     }
 
