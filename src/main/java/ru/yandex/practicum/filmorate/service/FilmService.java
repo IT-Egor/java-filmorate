@@ -39,13 +39,9 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        Map<Long, Long> filmsLikes = likesService.getFilmsLikesCount();
-        List<Long> mostPopularFilms = filmsLikes.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .map(Map.Entry::getKey)
-                .limit(filmsSelectionLength)
+        return likesService.getMostLikedFilms(filmsSelectionLength).stream()
+                .map(this::findFilm)
                 .toList();
-        return mostPopularFilms.stream().map(this::findFilm).toList();
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {

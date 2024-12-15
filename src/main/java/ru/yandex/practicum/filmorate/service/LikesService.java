@@ -4,13 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
-import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.storage.LikeRepository;
-
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,12 +24,7 @@ public class LikesService {
         return likeRepository.getFilmLikes(filmId).stream().map(LikeMapper::mapToLikeDTO).toList();
     }
 
-    public Map<Long, Long> getFilmsLikesCount() {
-        Collection<Like> likes = likeRepository.getAllFilmsLikes();
-        return likes.stream()
-                .collect(Collectors.groupingBy(
-                        Like::getFilmId,
-                        Collectors.counting()
-                ));
+    public List<Long> getMostLikedFilms(int selectionLimit) {
+        return likeRepository.getMostLikedFilmsIds(selectionLimit);
     }
 }

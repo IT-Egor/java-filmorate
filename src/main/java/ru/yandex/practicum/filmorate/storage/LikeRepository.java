@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Like;
 
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class LikeRepository extends BaseRepository<Like> {
@@ -28,8 +29,13 @@ public class LikeRepository extends BaseRepository<Like> {
         return delete(delete, filmId, userId);
     }
 
-    public Collection<Like> getAllFilmsLikes() {
-        String selectAll = "SELECT * FROM likes";
-        return findMany(selectAll);
+    public List<Long> getMostLikedFilmsIds(int selectionLimit) {
+        String selectMostLikedFilms =
+                "SELECT film_id " +
+                "FROM likes " +
+                "GROUP BY film_id " +
+                "ORDER BY COUNT(*) DESC " +
+                "LIMIT ?";
+        return jdbc.queryForList(selectMostLikedFilms, Long.class, selectionLimit);
     }
 }
