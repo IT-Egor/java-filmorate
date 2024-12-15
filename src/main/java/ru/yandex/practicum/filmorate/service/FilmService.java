@@ -54,18 +54,32 @@ public class FilmService {
     }
 
     public FilmDTO saveFilm(FilmDTO filmDTO) {
-        filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
-        Film film = FilmMapper.mapToFilm(filmDTO);
-        Long addedFilmId = filmRepository.addFilm(film);
+        try {
+            filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
+            Film film = FilmMapper.mapToFilm(filmDTO);
 
-        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
+            mpaService.findMpaById(film.getMpa().getId());
+            Long addedFilmId = filmRepository.addFilm(film);
 
-        return findFilm(addedFilmId);
+            filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
+
+            return findFilm(addedFilmId);
+        } catch (NotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     public FilmDTO updateFilm(FilmDTO filmDTO) {
-        filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
-        Film film = FilmMapper.mapToFilm(filmDTO);
+        Film film = null;
+        try {
+            filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
+            film = FilmMapper.mapToFilm(filmDTO);
+
+            mpaService.findMpaById(film.getMpa().getId());
+        } catch (NotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
         if (filmRepository.updateFilm(film) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }

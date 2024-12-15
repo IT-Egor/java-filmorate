@@ -20,7 +20,7 @@ public class GenreService {
 
     public GenreDTO findGenreDTOById(Long id) {
         Genre genre = genreRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Genre not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("Genre with id %s not found", id)));
         return GenreMapper.mapToGenreDTO(genre);
     }
 
@@ -30,14 +30,14 @@ public class GenreService {
 
     public Genre findGenreById(Long id) {
         return genreRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Genre not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("Genre with id %s not found", id)));
     }
 
     public List<GenreDTO> fixIfNullOrWithDuplicates(List<GenreDTO> genreDTOs) {
         if (genreDTOs == null) {
             return new ArrayList<>();
         } else {
-            return genreDTOs.stream().distinct().toList();
+            return genreDTOs.stream().distinct().map(genreDTO -> findGenreDTOById(genreDTO.getId())).toList();
         }
     }
 }
