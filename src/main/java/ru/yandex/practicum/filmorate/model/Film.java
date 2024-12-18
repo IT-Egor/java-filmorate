@@ -16,5 +16,5 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private Duration duration;
-    private Mpa mpa;
+    private Long mpa;
 }

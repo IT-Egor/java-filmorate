@@ -54,7 +54,7 @@ public class FilmService {
             filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
             Film film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpa().getId());
+            mpaService.findMpaById(film.getMpa());
             Long addedFilmId = filmRepository.addFilm(film);
 
             filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
@@ -71,7 +71,7 @@ public class FilmService {
             filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
             film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpa().getId());
+            mpaService.findMpaById(film.getMpa());
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -88,12 +88,11 @@ public class FilmService {
 
     public Collection<FilmDTO> getAllFilms() {
         return filmRepository.getAllFilms().stream().map(film -> {
-            Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
-            film.setMpa(mpa);
+            Mpa mpa = mpaService.findMpaById(film.getMpa());
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
 
-            return FilmMapper.mapToFilmDTO(film, genres);
+            return FilmMapper.mapToFilmDTO(film, genres, mpa);
         }).toList();
     }
 
@@ -102,12 +101,11 @@ public class FilmService {
         if (filmOpt.isPresent()) {
             Film film = filmOpt.get();
 
-            Mpa mpa = mpaService.findMpaById(film.getMpa().getId());
-            film.setMpa(mpa);
+            Mpa mpa = mpaService.findMpaById(film.getMpa());
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(id);
 
-            return FilmMapper.mapToFilmDTO(film, genres);
+            return FilmMapper.mapToFilmDTO(film, genres, mpa);
         } else {
             throw new NotFoundException("Film with id " + id + " not found");
         }

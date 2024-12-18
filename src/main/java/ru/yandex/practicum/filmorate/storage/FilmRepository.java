@@ -32,7 +32,7 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
-                film.getMpa().getId());
+                film.getMpa());
     }
 
     public Long updateFilm(Film film) {
@@ -42,7 +42,7 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
-                film.getMpa().getId(),
+                film.getMpa(),
                 film.getId());
     }
 }
