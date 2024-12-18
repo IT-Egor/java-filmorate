@@ -20,19 +20,19 @@ public class FilmGenreRepository extends BaseRepository<FilmGenre> {
         super(jdbc, mapper);
     }
 
-    public void batchInsert(List<GenreDTO> genreDTOList, long filmId) {
+    public void batchInsert(List<Long> genresIds, long filmId) {
         try {
             String insert = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
             jdbc.batchUpdate(insert, new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     ps.setLong(1, filmId);
-                    ps.setLong(2, genreDTOList.get(i).getId());
+                    ps.setLong(2, genresIds.get(i));
                 }
 
                 @Override
                 public int getBatchSize() {
-                    return genreDTOList.size();
+                    return genresIds.size();
                 }
             });
         } catch (DataIntegrityViolationException e) {

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.GenreDTO;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -54,10 +55,10 @@ public class FilmService {
             filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
             Film film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpa());
+            mpaService.findMpaById(film.getMpaId());
             Long addedFilmId = filmRepository.addFilm(film);
 
-            filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), addedFilmId);
+            filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), addedFilmId);
 
             return findFilm(addedFilmId);
         } catch (NotFoundException e) {
@@ -71,7 +72,7 @@ public class FilmService {
             filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
             film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpa());
+            mpaService.findMpaById(film.getMpaId());
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -81,14 +82,14 @@ public class FilmService {
         }
 
         filmGenreService.deleteFilmGenres(filmDTO.getId());
-        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().toList(), filmDTO.getId());
+        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
 
         return findFilm(filmDTO.getId());
     }
 
     public Collection<FilmDTO> getAllFilms() {
         return filmRepository.getAllFilms().stream().map(film -> {
-            Mpa mpa = mpaService.findMpaById(film.getMpa());
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
 
@@ -101,7 +102,7 @@ public class FilmService {
         if (filmOpt.isPresent()) {
             Film film = filmOpt.get();
 
-            Mpa mpa = mpaService.findMpaById(film.getMpa());
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(id);
 

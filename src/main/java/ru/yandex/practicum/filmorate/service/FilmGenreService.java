@@ -15,8 +15,8 @@ public class FilmGenreService {
     private final FilmGenreRepository filmGenreRepository;
     private final GenreService genreService;
 
-    public void addGenresToFilm(List<GenreDTO> genres, Long filmId) {
-        filmGenreRepository.batchInsert(genres, filmId);
+    public void addGenresToFilm(List<Long> genresIds, Long filmId) {
+        filmGenreRepository.batchInsert(genresIds, filmId);
     }
 
     public List<Genre> getGenresByFilmId(Long filmId) {

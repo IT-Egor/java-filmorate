@@ -31,7 +31,7 @@ public class FilmMapper {
         film.setDescription(dto.getDescription());
         film.setReleaseDate(dto.getReleaseDate());
         film.setDuration(dto.getDuration());
-        film.setMpa(dto.getMpa().getId());
+        film.setMpaId(dto.getMpa().getId());
         return film;
     }
 }
