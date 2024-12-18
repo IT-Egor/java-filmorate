@@ -66,7 +66,7 @@ public class FilmService {
     }
 
     public FilmDTO updateFilm(FilmDTO filmDTO) {
-        Film film = null;
+        Film film;
         try {
             filmDTO.setGenres(genreService.fixIfNullOrWithDuplicates(filmDTO.getGenres()));
             film = FilmMapper.mapToFilm(filmDTO);
@@ -92,9 +92,8 @@ public class FilmService {
             film.setMpa(mpa);
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
-            film.setGenres(genres);
 
-            return FilmMapper.mapToFilmDTO(film);
+            return FilmMapper.mapToFilmDTO(film, genres);
         }).toList();
     }
 
@@ -107,9 +106,8 @@ public class FilmService {
             film.setMpa(mpa);
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(id);
-            film.setGenres(genres);
 
-            return FilmMapper.mapToFilmDTO(film);
+            return FilmMapper.mapToFilmDTO(film, genres);
         } else {
             throw new NotFoundException("Film with id " + id + " not found");
         }

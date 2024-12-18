@@ -42,7 +42,8 @@ public class UserService {
 
     public Collection<UserDTO> getUserFriends(Long userId) {
         findUser(userId);
-        return friendService.getUserFriends(userId).stream().map(this::findUser).toList();
+        Collection<Long> userFriends = friendService.getUserFriends(userId);
+        return userFriends.stream().map(this::findUser).toList();
     }
 
     public Collection<UserDTO> getAllUsers() {

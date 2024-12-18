@@ -22,7 +22,6 @@ public class UserMapper {
         userDTO.setLogin(user.getLogin());
         userDTO.setName(user.getName());
         userDTO.setBirthday(user.getBirthday());
-        userDTO.setFriends(user.getFriends());
         return userDTO;
     }
 }
