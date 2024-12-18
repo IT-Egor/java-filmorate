@@ -1,69 +1,74 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
+import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.utility.Validator;
+import ru.yandex.practicum.filmorate.storage.UserRepository;
+
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-    public final UserStorage userStorage;
-
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
+    private final UserRepository userRepository;
+    private final FriendService friendService;
 
     public void makeFriends(Long userId, Long friendId) {
-        User user = findUser(userId);
-        User friend = findUser(friendId);
-        user.addFriend(friendId);
-        friend.addFriend(userId);
+        findUser(userId);
+        findUser(friendId);
+        friendService.addFriend(userId, friendId);
     }
 
     public void removeFriends(Long userId, Long friendId) {
-        User user = findUser(userId);
-        User friend = findUser(friendId);
-        user.removeFriend(friendId);
-        friend.removeFriend(userId);
+        findUser(userId);
+        findUser(friendId);
+        friendService.removeFriend(userId, friendId);
     }
 
-    public Collection<User> commonFriends(Long userId1, Long userId2) {
-        User user1 = findUser(userId1);
-        User user2 = findUser(userId2);
-        Set<Long> commonFriends = new HashSet<>(user1.getFriends());
-        commonFriends.retainAll(user2.getFriends());
-        return findUsers(commonFriends);
+    public Collection<UserDTO> commonFriends(Long userId1, Long userId2) {
+        findUser(userId1);
+        findUser(userId2);
+        List<Long> user1Friends = new ArrayList<>(friendService.getUserFriends(userId1));
+        List<Long> user2Friends = new ArrayList<>(friendService.getUserFriends(userId2));
+        return user1Friends.stream().filter(user2Friends::contains).map(this::findUser).toList();
     }
 
-    public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers();
+    public Collection<UserDTO> getUserFriends(Long userId) {
+        findUser(userId);
+        Collection<Long> userFriends = friendService.getUserFriends(userId);
+        return userFriends.stream().map(this::findUser).toList();
     }
 
-    public User saveUser(User user) {
-        Validator.validateUser(user);
-        return userStorage.addUser(user);
+    public Collection<UserDTO> getAllUsers() {
+        return userRepository.getAllUsers().stream().map(UserMapper::mapUserToUserDTO).toList();
     }
 
-    public User updateUser(User user) {
-        Validator.validateUser(user);
-        return userStorage.updateUser(user);
+    public UserDTO saveUser(MergeUserRequest userMerge) {
+        User user = UserMapper.mapMergeRequestToUser(userMerge);
+        return findUser(userRepository.addUser(user));
     }
 
-    public User findUser(Long id) {
-        Optional<User> userOpt = userStorage.findUser(id);
-        if (userOpt.isPresent()) {
-            return userOpt.get();
-        } else {
-            throw new NotFoundException("User with id " + id + " not found");
+    public UserDTO updateUser(MergeUserRequest userMerge) {
+        User user = UserMapper.mapMergeRequestToUser(userMerge);
+        if (userRepository.updateUser(user) == 0) {
+            throw new NotFoundException(String.format("User with id=%s not found", user.getId()));
         }
+        return findUser(user.getId());
     }
 
-    public Collection<User> findUsers(Collection<Long> ids) {
-        return ids.stream().map(this::findUser).toList();
+    public UserDTO findUser(Long id) {
+        Optional<User> userOpt = userRepository.findUser(id);
+        if (userOpt.isPresent()) {
+            return UserMapper.mapUserToUserDTO(userOpt.get());
+        } else {
+            throw new NotFoundException(String.format("User with id=%s not found", id));
+        }
     }
 }
