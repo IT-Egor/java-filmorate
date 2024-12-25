@@ -1,0 +1,54 @@
+-- пользователи
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    login VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(50),
+    birthday DATE NOT NULL
+);
+
+-- друзья
+CREATE TABLE IF NOT EXISTS friends (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT REFERENCES users(id),
+    friend_id BIGINT REFERENCES users(id),
+    UNIQUE (user_id, friend_id)
+);
+
+-- рейтинги
+CREATE TABLE IF NOT EXISTS ratings (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- фильмы
+CREATE TABLE IF NOT EXISTS films (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL,
+    description VARCHAR(200) NOT NULL,
+    release_date DATE NOT NULL,
+    duration INT NOT NULL,
+    rating_id BIGINT REFERENCES ratings(id)
+);
+
+-- лайки
+CREATE TABLE IF NOT EXISTS likes (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (film_id, user_id)
+);
+
+-- жанры
+CREATE TABLE IF NOT EXISTS genres (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- жанры фильмов
+CREATE TABLE IF NOT EXISTS film_genres (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
+    genre_id BIGINT REFERENCES genres(id),
+    UNIQUE (film_id, genre_id)
+);
