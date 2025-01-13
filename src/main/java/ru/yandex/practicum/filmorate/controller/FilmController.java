@@ -56,4 +56,9 @@ public class FilmController {
     public Collection<LikeDTO> getLikes(@PathVariable Long filmId) {
         return filmService.getFilmLikes(filmId);
     }
+
+    @DeleteMapping("/{filmId}")
+    public void removeFilm(@PathVariable Long filmId) {
+        filmService.removeFilm(filmId);
+    }
 }

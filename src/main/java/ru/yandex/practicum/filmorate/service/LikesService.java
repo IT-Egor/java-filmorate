@@ -27,4 +27,5 @@ public class LikesService {
     public List<Long> getMostLikedFilms(int selectionLimit) {
         return likeRepository.getMostLikedFilmsIds(selectionLimit);
     }
+
 }

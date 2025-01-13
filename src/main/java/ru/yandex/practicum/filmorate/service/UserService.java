@@ -71,4 +71,10 @@ public class UserService {
             throw new NotFoundException(String.format("User with id=%s not found", id));
         }
     }
+
+
+    public void removeUser(Long userId) {
+        findUser(userId);
+        userRepository.removeUser(userId);
+    }
 }

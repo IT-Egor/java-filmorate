@@ -111,4 +111,9 @@ public class FilmService {
             throw new NotFoundException("Film with id " + id + " not found");
         }
     }
+
+    public void removeFilm(Long filmId) {
+        findFilm(filmId);
+        filmRepository.removeFilm(filmId);
+    }
 }
