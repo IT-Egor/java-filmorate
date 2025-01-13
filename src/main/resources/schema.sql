@@ -52,3 +52,22 @@ CREATE TABLE IF NOT EXISTS film_genres (
     genre_id BIGINT REFERENCES genres(id),
     UNIQUE (film_id, genre_id)
 );
+
+-- отзывы на фильмы
+CREATE TABLE IF NOT EXISTS reviews (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    content VARCHAR NOT NULL,
+    type BOOLEAN,
+    UNIQUE (film_id, user_id)
+);
+
+-- оценка на отзывы
+CREATE TABLE IF NOT EXISTS like_reviews (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    review_id BIGINT REFERENCES reviews(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    like_review INT NOT NULL,
+    UNIQUE (review_id, user_id)
+);
