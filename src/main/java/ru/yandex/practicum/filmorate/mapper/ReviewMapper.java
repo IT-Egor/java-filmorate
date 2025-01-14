@@ -4,14 +4,14 @@ import ru.yandex.practicum.filmorate.dto.ReviewDTO;
 import ru.yandex.practicum.filmorate.model.Review;
 
 public class ReviewMapper {
-    public static ReviewDTO mapToReviewDTO(Review review, Integer useful) {
+    public static ReviewDTO mapToReviewDTO(Review review) {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setReviewId(review.getId());
         reviewDTO.setContent(review.getContent());
         reviewDTO.setIsPositive(review.isPositive());
         reviewDTO.setUserId(review.getUserId());
         reviewDTO.setFilmId(review.getFilmId());
-        reviewDTO.setUseful(useful);
+        reviewDTO.setUseful(review.getUseful());
         return reviewDTO;
     }
 

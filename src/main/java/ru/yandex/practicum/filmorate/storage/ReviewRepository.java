@@ -40,17 +40,22 @@ public class ReviewRepository extends BaseRepository<Review> {
     }
 
     public Optional<Review> findReview(long id) {
-        String findByIdQuery = "SELECT * FROM reviews WHERE id = ?";
+        String findByIdQuery = "SELECT r.*, SUM(COALESCE(lr.like_review, 0)) AS useful " +
+                "FROM reviews AS r LEFT JOIN like_reviews AS lr ON lr.review_id = r.id " +
+                "WHERE r.id = ? GROUP BY r.id";
         return findOne(findByIdQuery, id);
     }
 
     public Collection<Review> getAllReviews() {
-        String findAllQuery = "SELECT * FROM reviews";
+        String findAllQuery = "SELECT r.*, SUM(COALESCE(lr.like_review, 0)) AS useful " +
+                "FROM reviews AS r LEFT JOIN like_reviews AS lr ON lr.review_id = r.id GROUP BY r.id";
         return findMany(findAllQuery);
     }
 
     public Collection<Review> getReviewsOfFilm(Long filmId, int count) {
-        String findAllQuery = "SELECT * FROM reviews WHERE film_id = ? LIMIT ?";
+        String findAllQuery = "SELECT r.*, SUM(COALESCE(lr.like_review, 0)) AS useful " +
+                "FROM reviews AS r LEFT JOIN like_reviews AS lr ON lr.review_id = r.id " +
+                "WHERE r.film_id = ? GROUP BY r.id LIMIT ?";
         return findMany(findAllQuery, filmId, count);
     }
 }
