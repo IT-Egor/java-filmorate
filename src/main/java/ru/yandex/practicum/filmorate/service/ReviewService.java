@@ -58,8 +58,7 @@ public class ReviewService {
         Optional<Review> reviewOpt = reviewRepository.findReview(id);
         if (reviewOpt.isPresent()) {
             Review review = reviewOpt.get();
-            Integer useful = reviewLikeService.getUseful(id);
-            return ReviewMapper.mapToReviewDTO(review, useful);
+            return ReviewMapper.mapToReviewDTO(review);
         } else {
             throw new NotFoundException("Review with id " + id + " not found");
         }
@@ -80,10 +79,8 @@ public class ReviewService {
     private Collection<ReviewDTO> getSortedReviews(Collection<Review> collection) {
 
         return collection.stream()
-                .map((Review review) -> {
-                    Integer useful = reviewLikeService.getUseful(review.getId());
-                    return ReviewMapper.mapToReviewDTO(review, useful);
-                }).sorted(Comparator.comparing(ReviewDTO::getUseful).reversed()).toList();
+                .map(ReviewMapper::mapToReviewDTO)
+                .sorted(Comparator.comparing(ReviewDTO::getUseful).reversed()).toList();
     }
 
     private void checkFilmIdAndUserId(Review review) {
