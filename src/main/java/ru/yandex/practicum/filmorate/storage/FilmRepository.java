@@ -26,7 +26,8 @@ public class FilmRepository extends BaseRepository<Film> {
     }
 
     public Long addFilm(Film film) {
-        String insertQuery = "INSERT INTO films (name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO films (name, description, release_date, duration, rating_id) " +
+                "VALUES (?, ?, ?, ?, ?)";
         return insert(insertQuery,
                 film.getName(),
                 film.getDescription(),
@@ -36,13 +37,15 @@ public class FilmRepository extends BaseRepository<Film> {
     }
 
     public Long updateFilm(Film film) {
-        String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? WHERE id = ?";
+        String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, " +
+                "rating_id = ?, likes = ? WHERE id = ?";
         return update(updateQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
                 film.getMpaId(),
+                film.getLikes(),
                 film.getId());
     }
 

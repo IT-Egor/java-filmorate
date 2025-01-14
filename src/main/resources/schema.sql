@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS films (
     description VARCHAR(200) NOT NULL,
     release_date DATE NOT NULL,
     duration INT NOT NULL,
-    rating_id BIGINT REFERENCES ratings(id)
+    rating_id BIGINT REFERENCES ratings(id),
+    likes BIGINT
 );
 
 -- лайки
@@ -52,6 +53,22 @@ CREATE TABLE IF NOT EXISTS film_genres (
     genre_id BIGINT REFERENCES genres(id) ON DELETE CASCADE,
     UNIQUE (film_id, genre_id)
 );
+
+-- режиссеры
+CREATE TABLE IF NOT EXISTS directors (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- режиссеры фильмов
+CREATE TABLE IF NOT EXISTS film_directors (
+     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+     film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
+     director_id BIGINT REFERENCES directors(id) ON DELETE CASCADE,
+     UNIQUE (film_id, director_id)
+);
+
+ALTER TABLE films ALTER COLUMN likes SET DEFAULT 0;
 
 -- отзывы на фильмы
 CREATE TABLE IF NOT EXISTS reviews (
