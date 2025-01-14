@@ -40,7 +40,7 @@ public class ReviewLikeService {
     private long addLikeOrDislikeOnReview(Long reviewId, Long userId, int likeReview) {
         Optional<ReviewLike> reviewLikeOpt = reviewLikeRepository.findReviewLike(reviewId, userId);
         if (reviewLikeOpt.isPresent()) {
-            if (reviewLikeOpt.get().getLikeReview().equals(likeReview)) {
+            if (reviewLikeOpt.get().getLike().equals(likeReview)) {
                 return reviewLikeOpt.get().getId();
             }
             removeLikeOrDislikeOnReview(reviewId, userId);

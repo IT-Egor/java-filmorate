@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     content VARCHAR NOT NULL,
-    type BOOLEAN,
+    isPositive BOOLEAN,
     UNIQUE (film_id, user_id)
 );
 

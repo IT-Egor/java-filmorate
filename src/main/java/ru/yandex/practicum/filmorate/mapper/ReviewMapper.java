@@ -8,7 +8,7 @@ public class ReviewMapper {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setReviewId(review.getId());
         reviewDTO.setContent(review.getContent());
-        reviewDTO.setIsPositive(review.isType());
+        reviewDTO.setIsPositive(review.isPositive());
         reviewDTO.setUserId(review.getUserId());
         reviewDTO.setFilmId(review.getFilmId());
         reviewDTO.setUseful(useful);
@@ -19,7 +19,7 @@ public class ReviewMapper {
         Review review = new Review();
         review.setId(reviewDTO.getReviewId());
         review.setContent(reviewDTO.getContent());
-        review.setType(reviewDTO.getIsPositive());
+        review.setPositive(reviewDTO.getIsPositive());
         review.setFilmId(reviewDTO.getFilmId());
         review.setUserId(reviewDTO.getUserId());
         return review;

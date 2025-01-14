@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.ReviewDTO;
 import ru.yandex.practicum.filmorate.service.ReviewLikeService;
@@ -12,7 +11,6 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/reviews")
-@Slf4j
 @AllArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
