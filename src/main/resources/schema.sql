@@ -53,6 +53,19 @@ CREATE TABLE IF NOT EXISTS film_genres (
     UNIQUE (film_id, genre_id)
 );
 
+--лента событий
+create table if not exists feed
+(
+    event_id   long auto_increment,
+    user_id    long,
+    timestamp  long        not null,
+    event_type varchar(10) not null,
+    operation  varchar(10) not null,
+    entity_id  long         not null,
+    foreign key (user_id) references users (id) on delete cascade,
+    primary key (event_id)
+);
+
 -- отзывы на фильмы
 CREATE TABLE IF NOT EXISTS reviews (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

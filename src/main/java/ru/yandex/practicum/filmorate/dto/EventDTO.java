@@ -1,10 +1,16 @@
 package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
+import ru.yandex.practicum.filmorate.validator.annotations.PositiveDuration;
+import ru.yandex.practicum.filmorate.validator.annotations.ReleaseDate;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class EventDTO {
