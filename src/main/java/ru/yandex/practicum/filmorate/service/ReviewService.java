@@ -68,20 +68,22 @@ public class ReviewService {
     public Collection<ReviewDTO> getReviewsOfFilm(Long filmId, int count) {
 
         if (filmId == 0) {
-            return reviewRepository.getAllReviews().stream()
-                    .map((Review review) -> {
-                        Integer useful = reviewLikeService.getUseful(review.getId());
-                        return ReviewMapper.mapToReviewDTO(review, useful);
-                    }).sorted(Comparator.comparing(ReviewDTO::getUseful).reversed()).toList();
+            return getSortedReviews(reviewRepository.getAllReviews());
         }
+
         if (filmId > 0) {
-            return reviewRepository.getReviewsOfFilm(filmId, count).stream()
-                    .map((Review review) -> {
-                        Integer useful = reviewLikeService.getUseful(review.getId());
-                        return ReviewMapper.mapToReviewDTO(review, useful);
-                    }).sorted(Comparator.comparing(ReviewDTO::getUseful).reversed()).toList();
+            return getSortedReviews(reviewRepository.getReviewsOfFilm(filmId, count));
         }
         return null;
+    }
+
+    private Collection<ReviewDTO> getSortedReviews(Collection<Review> collection) {
+
+        return collection.stream()
+                .map((Review review) -> {
+                    Integer useful = reviewLikeService.getUseful(review.getId());
+                    return ReviewMapper.mapToReviewDTO(review, useful);
+                }).sorted(Comparator.comparing(ReviewDTO::getUseful).reversed()).toList();
     }
 
     private void checkFilmIdAndUserId(Review review) {

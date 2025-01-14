@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
 @Data
 public class ReviewDTO {
@@ -22,6 +21,5 @@ public class ReviewDTO {
     @NotNull(message = "Film id is required")
     private long filmId;
 
-    @Value("${default.useful}")
-    private Integer useful;
+    private Integer useful = 0;
 }

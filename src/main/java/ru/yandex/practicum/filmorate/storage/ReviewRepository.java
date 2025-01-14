@@ -16,21 +16,21 @@ public class ReviewRepository extends BaseRepository<Review> {
     }
 
     public Long addReview(Review review) {
-        String insertQuery = "INSERT INTO reviews (film_id, user_id, content, type) VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO reviews (film_id, user_id, content, isPositive) VALUES (?, ?, ?, ?)";
         return insert(insertQuery,
                 review.getFilmId(),
                 review.getUserId(),
                 review.getContent(),
-                review.isType());
+                review.isPositive());
     }
 
     public Long updateReview(Review review) {
-        String updateQuery = "UPDATE reviews SET film_id = ?, user_id = ?, content = ?, type = ? WHERE id = ?";
+        String updateQuery = "UPDATE reviews SET film_id = ?, user_id = ?, content = ?, isPositive = ? WHERE id = ?";
         return update(updateQuery,
                 review.getFilmId(),
                 review.getUserId(),
                 review.getContent(),
-                review.isType(),
+                review.isPositive(),
                 review.getId());
     }
 

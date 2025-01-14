@@ -12,5 +12,5 @@ public class ReviewLike {
     private Long id;
     private Long reviewId;
     private Long userId;
-    private Integer likeReview;
+    private Integer like;
 }
