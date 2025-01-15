@@ -21,5 +21,5 @@ public class ReviewDTO {
     @NotNull(message = "Film id is required")
     private long filmId;
 
-    private Integer useful = 0;
+    private long useful = 0;
 }

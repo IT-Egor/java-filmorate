@@ -14,7 +14,7 @@ public class ReviewLikeRepository extends BaseRepository<ReviewLike> {
         super(jdbc, mapper);
     }
 
-    public long addLikeOrDislikeOnReview(Long reviewId, Long userId, int likeReview) {
+    public long addLikeOrDislikeOnReview(Long reviewId, Long userId, Integer likeReview) {
         String insertQuery = "INSERT INTO like_reviews (review_id, user_id, like_review) VALUES (?, ?, ?)";
         return insert(insertQuery,
                 reviewId,
@@ -27,11 +27,11 @@ public class ReviewLikeRepository extends BaseRepository<ReviewLike> {
         return findOne(findByIdQuery, reviewId, userId);
     }
 
-    public Optional<Integer> getUseful(Long reviewId) {
+    public Optional<Long> getUseful(Long reviewId) {
         String findByIdQuery = "SELECT SUM(like_review) FROM like_reviews WHERE review_id = ?";
 
         try {
-            Integer result = jdbc.queryForObject(findByIdQuery, Integer.class, reviewId);
+            Long result = jdbc.queryForObject(findByIdQuery, Long.class, reviewId);
             return Optional.ofNullable(result);
         } catch (EmptyResultDataAccessException ignored) {
             return Optional.empty();

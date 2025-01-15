@@ -10,14 +10,12 @@ import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.ReviewRepository;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final ReviewLikeService reviewLikeService;
 
     public ReviewDTO saveReview(ReviewDTO reviewDTO) {
         try {
@@ -67,20 +65,22 @@ public class ReviewService {
     public Collection<ReviewDTO> getReviewsOfFilm(Long filmId, int count) {
 
         if (filmId == 0) {
-            return getSortedReviews(reviewRepository.getAllReviews());
+            return reviewRepository.getAllReviews().stream()
+                .map(ReviewMapper::mapToReviewDTO).toList();
         }
 
         if (filmId > 0) {
-            return getSortedReviews(reviewRepository.getReviewsOfFilm(filmId, count));
+            return reviewRepository.getReviewsOfFilm(filmId, count).stream()
+                    .map(ReviewMapper::mapToReviewDTO).toList();
         }
         return null;
     }
 
-    private Collection<ReviewDTO> getSortedReviews(Collection<Review> collection) {
+    public void updateUsefulOfReview(Long reviewId, Long useful) {
 
-        return collection.stream()
-                .map(ReviewMapper::mapToReviewDTO)
-                .sorted(Comparator.comparing(ReviewDTO::getUseful).reversed()).toList();
+        if (reviewRepository.updateUsefulOfReview(reviewId, useful) == 0) {
+            throw new NotFoundException(String.format("Useful of review with id=%s: update error", reviewId));
+        }
     }
 
     private void checkFilmIdAndUserId(Review review) {

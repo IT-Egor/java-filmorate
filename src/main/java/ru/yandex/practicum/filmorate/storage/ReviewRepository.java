@@ -34,28 +34,28 @@ public class ReviewRepository extends BaseRepository<Review> {
                 review.getId());
     }
 
+    public long updateUsefulOfReview(Long reviewId, Long useful) {
+        String updateQuery = "UPDATE reviews SET useful = ? WHERE id = ?";
+        return update(updateQuery, useful, reviewId);
+    }
+
     public boolean deleteReview(Long id) {
         String delete = "DELETE FROM reviews WHERE id = ?";
         return delete(delete, id);
     }
 
     public Optional<Review> findReview(long id) {
-        String findByIdQuery = "SELECT r.*, SUM(COALESCE(lr.like_review, 0)) AS useful " +
-                "FROM reviews AS r LEFT JOIN like_reviews AS lr ON lr.review_id = r.id " +
-                "WHERE r.id = ? GROUP BY r.id";
+        String findByIdQuery = "SELECT * FROM reviews WHERE id = ? ORDER BY useful DESC";
         return findOne(findByIdQuery, id);
     }
 
     public Collection<Review> getAllReviews() {
-        String findAllQuery = "SELECT r.*, SUM(COALESCE(lr.like_review, 0)) AS useful " +
-                "FROM reviews AS r LEFT JOIN like_reviews AS lr ON lr.review_id = r.id GROUP BY r.id";
+        String findAllQuery = "SELECT * FROM reviews ORDER BY useful DESC";
         return findMany(findAllQuery);
     }
 
     public Collection<Review> getReviewsOfFilm(Long filmId, int count) {
-        String findAllQuery = "SELECT r.*, SUM(COALESCE(lr.like_review, 0)) AS useful " +
-                "FROM reviews AS r LEFT JOIN like_reviews AS lr ON lr.review_id = r.id " +
-                "WHERE r.film_id = ? GROUP BY r.id LIMIT ?";
+        String findAllQuery = "SELECT * FROM reviews WHERE film_id = ? ORDER BY useful DESC LIMIT ?";
         return findMany(findAllQuery, filmId, count);
     }
 }
