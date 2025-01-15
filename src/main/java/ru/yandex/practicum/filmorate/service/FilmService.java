@@ -48,12 +48,12 @@ public class FilmService {
                 .map(this::findFilm)
                 .toList());
 
-        if (allFilms.size() > likeFilms.size()) {
+        if (filmsSelectionLength > likeFilms.size()) {
             for (FilmDTO film : allFilms) {
                 if (!likeFilms.contains(film)) {
                     likeFilms.add(film);
                 }
-                if (allFilms.size() == likeFilms.size()) {
+                if (filmsSelectionLength == likeFilms.size()) {
                     return likeFilms;
                 }
             }
