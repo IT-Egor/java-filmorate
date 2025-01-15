@@ -13,14 +13,15 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ReviewLikeService {
     private final ReviewLikeRepository reviewLikeRepository;
+    private final ReviewService reviewService;
 
     public long addLikeOnReview(Long reviewId, Long userId) {
-        int likeReview = 1;
+        Integer likeReview = 1;
         return addLikeOrDislikeOnReview(reviewId, userId, likeReview);
     }
 
     public long addDislikeOnReview(Long reviewId, Long userId) {
-        int likeReview = -1;
+        Integer likeReview = -1;
         return addLikeOrDislikeOnReview(reviewId, userId, likeReview);
     }
 
@@ -32,12 +33,12 @@ public class ReviewLikeService {
         return removeLikeOrDislikeOnReview(id, userId);
     }
 
-    public Integer getUseful(Long reviewId) {
-        Optional<Integer> usefulOpt = reviewLikeRepository.getUseful(reviewId);
-        return usefulOpt.orElse(0);
+    public Long getUseful(Long reviewId) {
+        Optional<Long> usefulOpt = reviewLikeRepository.getUseful(reviewId);
+        return usefulOpt.orElse(0L);
     }
 
-    private long addLikeOrDislikeOnReview(Long reviewId, Long userId, int likeReview) {
+    private long addLikeOrDislikeOnReview(Long reviewId, Long userId, Integer likeReview) {
         Optional<ReviewLike> reviewLikeOpt = reviewLikeRepository.findReviewLike(reviewId, userId);
         if (reviewLikeOpt.isPresent()) {
             if (reviewLikeOpt.get().getLike().equals(likeReview)) {
@@ -46,7 +47,10 @@ public class ReviewLikeService {
             removeLikeOrDislikeOnReview(reviewId, userId);
         }
         try {
-            return reviewLikeRepository.addLikeOrDislikeOnReview(reviewId, userId, likeReview);
+            long like = reviewLikeRepository.addLikeOrDislikeOnReview(reviewId, userId, likeReview);
+            Long useful = getUseful(reviewId);
+            reviewService.updateUsefulOfReview(reviewId, useful);
+            return like;
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -57,6 +61,8 @@ public class ReviewLikeService {
         if (!reviewLikeRepository.removeLikeOrDislikeOnReview(reviewLike)) {
             throw new BadRequestException(String.format("Review with id=%s already deleted", id));
         }
+        Long useful = getUseful(id);
+        reviewService.updateUsefulOfReview(id, useful);
         return reviewLike.getId();
     }
 
