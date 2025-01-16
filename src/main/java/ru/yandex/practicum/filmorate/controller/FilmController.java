@@ -62,6 +62,7 @@ public class FilmController {
     public void removeFilm(@PathVariable Long filmId) {
         filmService.removeFilm(filmId);
     }
+
     @GetMapping("/common")
     public List<FilmDTO> getMutualFilms(@RequestParam Long userId, @RequestParam Long friendId) {
         return filmService.getMutualFilms(userId, friendId);
