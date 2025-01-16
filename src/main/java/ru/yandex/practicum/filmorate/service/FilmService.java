@@ -105,8 +105,6 @@ public class FilmService {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
 
-        filmGenreService.deleteFilmGenres(filmDTO.getId());
-        filmDirectorService.deleteFilmDirectors(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
         filmDirectorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
 
@@ -155,7 +153,7 @@ public class FilmService {
         } else {
             return filmDirectors.stream()
                     .map(filmDirector -> findFilm(filmDirector.getFilmId()))
-                    .sorted(Comparator.comparing(FilmDTO::getLikes))
+                    .sorted(Comparator.comparing(FilmDTO::getLikes).reversed())
                     .toList();
         }
     }

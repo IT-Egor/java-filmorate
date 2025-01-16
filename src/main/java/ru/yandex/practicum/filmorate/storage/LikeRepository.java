@@ -19,9 +19,9 @@ public class LikeRepository extends BaseRepository<Like> {
         return findMany(selectFilmLikes, filmId);
     }
 
-    public long addLikeToFilm(Long filmId, Long userId) {
+    public void addLikeToFilm(Long filmId, Long userId) {
         String insert = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
-        return insert(insert, filmId, userId);
+        insert(insert, filmId, userId);
     }
 
     public boolean removeLikeFromFilm(Long filmId, Long userId) {
