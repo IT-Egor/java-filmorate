@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Like;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class LikeRepository extends BaseRepository<Like> {
