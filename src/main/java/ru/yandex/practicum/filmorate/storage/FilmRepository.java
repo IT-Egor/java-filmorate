@@ -45,4 +45,9 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getMpaId(),
                 film.getId());
     }
+
+    public void removeFilm(Long id) {
+        String deleteFilmQuery = "DELETE from films where id = ?";
+        update(deleteFilmQuery, id);
+    }
 }

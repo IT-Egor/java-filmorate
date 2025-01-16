@@ -22,6 +22,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{id}")
+    public UserDTO getUser(@PathVariable Long id) {
+        return userService.findUser(id);
+    }
+
     @PostMapping
     public UserDTO createUser(@Valid @RequestBody MergeUserRequest userMerge) {
         return userService.saveUser(userMerge);
@@ -50,5 +55,10 @@ public class UserController {
     @GetMapping("{id}/friends/common/{otherId}")
     public Collection<UserDTO> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         return userService.commonFriends(id, otherId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void removeUser(@PathVariable Long userId) {
+        userService.removeUser(userId);
     }
 }

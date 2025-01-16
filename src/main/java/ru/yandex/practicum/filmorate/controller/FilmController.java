@@ -58,8 +58,12 @@ public class FilmController {
         return filmService.getFilmLikes(filmId);
     }
 
+    @DeleteMapping("/{filmId}")
+    public void removeFilm(@PathVariable Long filmId) {
+        filmService.removeFilm(filmId);
+    }
+  
     @GetMapping("/common")
     public List<FilmDTO> getMutualFilms(@RequestParam Long userId, @RequestParam Long friendId) {
         return filmService.getMutualFilms(userId, friendId);
-    }
 }
