@@ -42,22 +42,9 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        Collection<FilmDTO> allFilms = getAllFilms();
-        Collection<FilmDTO> likeFilms = new java.util.ArrayList<>(likesService.getMostLikedFilms(filmsSelectionLength).stream()
+        return likesService.getMostLikedFilms(filmsSelectionLength).stream()
                 .map(this::findFilm)
-                .toList());
-
-        if (filmsSelectionLength > likeFilms.size()) {
-            for (FilmDTO film : allFilms) {
-                if (!likeFilms.contains(film)) {
-                    likeFilms.add(film);
-                }
-                if (filmsSelectionLength == likeFilms.size()) {
-                    return likeFilms;
-                }
-            }
-        }
-        return likeFilms;
+                .toList();
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
