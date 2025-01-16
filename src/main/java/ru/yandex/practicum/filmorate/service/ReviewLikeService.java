@@ -47,10 +47,10 @@ public class ReviewLikeService {
             removeLikeOrDislikeOnReview(reviewId, userId);
         }
         try {
-            long like = reviewLikeRepository.addLikeOrDislikeOnReview(reviewId, userId, likeReview);
+            long likeId = reviewLikeRepository.addLikeOrDislikeOnReview(reviewId, userId, likeReview);
             Long useful = getUseful(reviewId);
             reviewService.updateUsefulOfReview(reviewId, useful);
-            return like;
+            return likeId;
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }

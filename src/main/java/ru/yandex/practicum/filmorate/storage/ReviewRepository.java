@@ -45,7 +45,7 @@ public class ReviewRepository extends BaseRepository<Review> {
     }
 
     public Optional<Review> findReview(long id) {
-        String findByIdQuery = "SELECT * FROM reviews WHERE id = ? ORDER BY useful DESC";
+        String findByIdQuery = "SELECT * FROM reviews WHERE id = ?";
         return findOne(findByIdQuery, id);
     }
 
