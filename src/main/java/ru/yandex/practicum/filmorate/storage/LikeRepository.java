@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.model.Like;
 
 import java.util.Collection;
@@ -49,18 +48,18 @@ public class LikeRepository extends BaseRepository<Like> {
     public List<Long> getMutualFilm(Long userId, Long friendId) {
         String sql =
                 "SELECT l.film_id " +
-                "FROM likes l " +
-                "WHERE l.film_id IN (" +
-                "    SELECT film_id " +
-                "    FROM likes " +
-                "    WHERE user_id = ? " +
-                ") AND l.film_id IN (" +
-                "    SELECT film_id " +
-                "    FROM likes " +
-                "    WHERE user_id = ? " +
-                ") " +
-                "GROUP BY l.film_id " +
-                "ORDER BY COUNT(l.user_id) DESC;";
+                        "FROM likes l " +
+                        "WHERE l.film_id IN (" +
+                        "    SELECT film_id " +
+                        "    FROM likes " +
+                        "    WHERE user_id = ? " +
+                        ") AND l.film_id IN (" +
+                        "    SELECT film_id " +
+                        "    FROM likes " +
+                        "    WHERE user_id = ? " +
+                        ") " +
+                        "GROUP BY l.film_id " +
+                        "ORDER BY COUNT(l.user_id) DESC;";
 
         return jdbc.queryForList(sql, Long.class, userId, friendId);
     }
