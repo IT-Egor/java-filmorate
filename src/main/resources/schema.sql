@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
 -- друзья
 CREATE TABLE IF NOT EXISTS friends (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id),
-    friend_id BIGINT REFERENCES users(id),
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    friend_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE (user_id, friend_id)
 );
 
@@ -49,6 +49,6 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS film_genres (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
-    genre_id BIGINT REFERENCES genres(id),
+    genre_id BIGINT REFERENCES genres(id) ON DELETE CASCADE,
     UNIQUE (film_id, genre_id)
 );

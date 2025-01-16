@@ -2,18 +2,20 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.GenreDTO;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -40,9 +42,23 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        return likesService.getMostLikedFilms(filmsSelectionLength).stream()
+
+        Collection<FilmDTO> allFilms = getAllFilms();
+        Collection<FilmDTO> likeFilms = new java.util.ArrayList<>(likesService.getMostLikedFilms(filmsSelectionLength).stream()
                 .map(this::findFilm)
-                .toList();
+                .toList());
+
+        if (filmsSelectionLength > likeFilms.size()) {
+            for (FilmDTO film : allFilms) {
+                if (!likeFilms.contains(film)) {
+                    likeFilms.add(film);
+                }
+                if (filmsSelectionLength == likeFilms.size()) {
+                    return likeFilms;
+                }
+            }
+        }
+        return likeFilms;
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
@@ -110,5 +126,10 @@ public class FilmService {
         } else {
             throw new NotFoundException("Film with id " + id + " not found");
         }
+    }
+
+    public void removeFilm(Long filmId) {
+        findFilm(filmId);
+        filmRepository.removeFilm(filmId);
     }
 }
