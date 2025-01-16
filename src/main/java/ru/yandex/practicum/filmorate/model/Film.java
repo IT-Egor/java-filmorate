@@ -18,5 +18,5 @@ public class Film {
     private LocalDate releaseDate;
     private Duration duration;
     private Long mpaId;
-    private Long likes = 0L;
+    private Long likes;
 }

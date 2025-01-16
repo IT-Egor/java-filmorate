@@ -31,7 +31,7 @@ public class FilmService {
         FilmDTO film = findFilm(filmId);
         likesService.addLike(filmId, userId);
 
-        film.setLikes(film.getLikes() + 1);
+        film.setLikes(film.getLikes() + 1L);
         updateFilm(film);
     }
 
@@ -42,7 +42,7 @@ public class FilmService {
         if (!likesService.removeLike(filmId, userId)) {
             throw new BadRequestException(String.format("Film with id=%s already unliked by user with id=%s", filmId, userId));
         } else {
-            film.setLikes(film.getLikes() - 1);
+            film.setLikes(film.getLikes() - 1L);
             updateFilm(film);
         }
     }
@@ -104,7 +104,8 @@ public class FilmService {
         if (filmRepository.updateFilm(film) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
-
+        filmGenreService.deleteFilmGenres(filmDTO.getId());
+        filmDirectorService.deleteFilmDirectors(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
         filmDirectorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
 
