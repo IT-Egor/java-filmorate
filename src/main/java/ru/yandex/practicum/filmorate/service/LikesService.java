@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.LikeRepository;
-
 import java.util.*;
 
 @Service
@@ -43,5 +42,9 @@ public class LikesService {
             }
         });
         return sortedFilms;
+    }
+
+    public List<Long> getMutualFilm(Long userId, Long friendId) {
+        return likeRepository.getMutualFilm(userId, friendId);
     }
 }
