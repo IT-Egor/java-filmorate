@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
 import ru.yandex.practicum.filmorate.storage.LikeRepository;
+
 import java.util.List;
 
 @Service
@@ -26,5 +27,9 @@ public class LikesService {
 
     public List<Long> getMostLikedFilms(int selectionLimit) {
         return likeRepository.getMostLikedFilmsIds(selectionLimit);
+    }
+
+    public List<Long> getMutualFilm(Long userId, Long friendId) {
+        return likeRepository.getMutualFilm(userId, friendId);
     }
 }

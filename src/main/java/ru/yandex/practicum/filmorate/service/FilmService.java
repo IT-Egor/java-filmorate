@@ -111,4 +111,11 @@ public class FilmService {
             throw new NotFoundException("Film with id " + id + " not found");
         }
     }
+
+    public List<FilmDTO> getMutualFilms(Long id, Long friendId) {
+        if (userService.findUser(id) == null || userService.findUser(friendId) == null) {
+            throw new NotFoundException("Id is not found");
+        }
+        return likesService.getMutualFilm(id, friendId).stream().map(this::findFilm).toList();
+    }
 }
