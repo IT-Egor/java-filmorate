@@ -30,8 +30,4 @@ public class FilmDirectorService {
     public void deleteFilmDirectors(Long filmId) {
         filmDirectorRepository.deleteFilmDirectors(filmId);
     }
-
-    public Collection<FilmDirector> findAllByDirectorId(Long directorId) {
-        return filmDirectorRepository.findAllByDirectorId(directorId);
-    }
 }

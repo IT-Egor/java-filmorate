@@ -31,23 +31,20 @@ class FilmRepositoryTest {
                         "Описание фильма 1",
                         LocalDate.of(2020, 1, 1),
                         Duration.ofMinutes(120),
-                        1L,
-                        0L),
+                        1L),
                 new Film(
                         2,
                         "Фильм 2",
                         "Описание фильма 2",
                         LocalDate.of(2019, 6, 15),
                         Duration.ofMinutes(90),
-                        2L,
-                        0L),
+                        2L),
                 new Film(3,
                         "Фильм 3",
                         "Описание фильма 3",
                         LocalDate.of(2018, 3, 20),
                         Duration.ofMinutes(150),
-                        3L,
-                        0L)
+                        3L)
         );
         assertArrayEquals(expected.toArray(), filmRepository.getAllFilms().toArray());
     }
@@ -60,8 +57,7 @@ class FilmRepositoryTest {
                 "Описание фильма 1",
                 LocalDate.of(2020, 1, 1),
                 Duration.ofMinutes(120),
-                1L,
-                0L);
+                1L);
         assertEquals(expected, filmRepository.findFilm(1).get());
     }
 
@@ -73,8 +69,7 @@ class FilmRepositoryTest {
                 "Описание фильма 4",
                 LocalDate.of(2020, 1, 1),
                 Duration.ofMinutes(120),
-                1L,
-                0L);
+                1L);
         film.setId(filmRepository.addFilm(film));
         assertEquals(film, filmRepository.findFilm(4).get());
     }
@@ -87,8 +82,7 @@ class FilmRepositoryTest {
                 "Описание фильма 4",
                 LocalDate.of(2020, 1, 1),
                 Duration.ofMinutes(120),
-                1L,
-                0L);
+                1L);
         film.setId(filmRepository.addFilm(film));
 
         Film updatedFilm = new Film(
@@ -97,8 +91,7 @@ class FilmRepositoryTest {
                 "Обновленное описание фильма 4",
                 LocalDate.of(2021, 2, 3),
                 Duration.ofMinutes(180),
-                2L,
-                0L);
+                2L);
         filmRepository.updateFilm(updatedFilm);
         assertEquals(updatedFilm, filmRepository.findFilm(film.getId()).get());
     }

@@ -38,5 +38,4 @@ public class FilmDTO {
     @Valid
     private List<DirectorDTO> directors;
 
-    private Long likes;
 }

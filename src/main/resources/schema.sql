@@ -28,8 +28,7 @@ CREATE TABLE IF NOT EXISTS films (
     description VARCHAR(200) NOT NULL,
     release_date DATE NOT NULL,
     duration INT NOT NULL,
-    rating_id BIGINT REFERENCES ratings(id),
-    likes BIGINT
+    rating_id BIGINT REFERENCES ratings(id)
 );
 
 -- лайки
@@ -67,8 +66,6 @@ CREATE TABLE IF NOT EXISTS film_directors (
      director_id BIGINT REFERENCES directors(id) ON DELETE CASCADE,
      UNIQUE (film_id, director_id)
 );
-
-ALTER TABLE films ALTER COLUMN likes SET DEFAULT 0;
 
 -- отзывы на фильмы
 CREATE TABLE IF NOT EXISTS reviews (

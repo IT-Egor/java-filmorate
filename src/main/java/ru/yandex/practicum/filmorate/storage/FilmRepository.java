@@ -25,6 +25,18 @@ public class FilmRepository extends BaseRepository<Film> {
         return findOne(findByIdQuery, id);
     }
 
+    public Collection<Film> findFilmsByDirector(Long directorId, String sortBy) {
+        String sort = sortBy.equals("year") ? "release_date;" : "likes_count DESC;";
+        String query = "SELECT f.*, COUNT(likes.id) as likes_count " +
+                "FROM film_directors " +
+                "INNER JOIN films AS f ON f.id = film_directors.film_id " +
+                "LEFT JOIN likes ON f.id=likes.film_id " +
+                "WHERE film_directors.director_id = ? " +
+                "GROUP BY f.id, f.name, f.description, f.release_date, f.duration " +
+                "ORDER BY ";
+        return findMany(query + sort, directorId);
+    }
+
     public Long addFilm(Film film) {
         String insertQuery = "INSERT INTO films (name, description, release_date, duration, rating_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -38,14 +50,13 @@ public class FilmRepository extends BaseRepository<Film> {
 
     public Long updateFilm(Film film) {
         String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, " +
-                "rating_id = ?, likes = ? WHERE id = ?";
+                "rating_id = ? WHERE id = ?";
         return update(updateQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
                 film.getMpaId(),
-                film.getLikes(),
                 film.getId());
     }
 

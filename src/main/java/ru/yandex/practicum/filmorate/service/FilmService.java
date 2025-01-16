@@ -28,22 +28,16 @@ public class FilmService {
 
     public void addLike(Long filmId, Long userId) {
         userService.findUser(userId);
-        FilmDTO film = findFilm(filmId);
+        findFilm(filmId);
         likesService.addLike(filmId, userId);
-
-        film.setLikes(film.getLikes() + 1L);
-        updateFilm(film);
     }
 
     public void removeLike(Long filmId, Long userId) {
         userService.findUser(userId);
-        FilmDTO film = findFilm(filmId);
+        findFilm(filmId);
 
         if (!likesService.removeLike(filmId, userId)) {
             throw new BadRequestException(String.format("Film with id=%s already unliked by user with id=%s", filmId, userId));
-        } else {
-            film.setLikes(film.getLikes() - 1L);
-            updateFilm(film);
         }
     }
 
@@ -113,14 +107,8 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getAllFilms() {
-        return filmRepository.getAllFilms().stream().map(film -> {
-            Mpa mpa = mpaService.findMpaById(film.getMpaId());
-
-            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
-            List<Director> directors = filmDirectorService.getDirectorsByFilmId(film.getId());
-
-            return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
-        }).toList();
+        Collection<Film> films = filmRepository.getAllFilms();
+        return mapFilmsToFilmsDTO(films);
     }
 
     public FilmDTO findFilm(Long id) {
@@ -145,17 +133,18 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy) {
-        List<FilmDirector> filmDirectors = new ArrayList<>(filmDirectorService.findAllByDirectorId(directorId));
-        if (sortBy.equals("year")) {
-            return filmDirectors.stream()
-                    .map(filmDirector -> findFilm(filmDirector.getFilmId()))
-                    .sorted(Comparator.comparing(FilmDTO::getReleaseDate))
-                    .toList();
-        } else {
-            return filmDirectors.stream()
-                    .map(filmDirector -> findFilm(filmDirector.getFilmId()))
-                    .sorted(Comparator.comparing(FilmDTO::getLikes).reversed())
-                    .toList();
-        }
+        Collection<Film> films = filmRepository.findFilmsByDirector(directorId, sortBy);
+        return mapFilmsToFilmsDTO(films);
+    }
+
+    private Collection<FilmDTO> mapFilmsToFilmsDTO(Collection<Film> films) {
+        return films.stream().map(film -> {
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
+
+            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
+            List<Director> directors = filmDirectorService.getDirectorsByFilmId(film.getId());
+
+            return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
+        }).toList();
     }
 }
