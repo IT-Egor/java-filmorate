@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -60,5 +61,9 @@ public class FilmController {
     @DeleteMapping("/{filmId}")
     public void removeFilm(@PathVariable Long filmId) {
         filmService.removeFilm(filmId);
+    }
+    @GetMapping("/common")
+    public List<FilmDTO> getMutualFilms(@RequestParam Long userId, @RequestParam Long friendId) {
+        return filmService.getMutualFilms(userId, friendId);
     }
 }

@@ -132,4 +132,11 @@ public class FilmService {
         findFilm(filmId);
         filmRepository.removeFilm(filmId);
     }
+
+    public List<FilmDTO> getMutualFilms(Long id, Long friendId) {
+        if (userService.findUser(id) == null || userService.findUser(friendId) == null) {
+            throw new NotFoundException("Id is not found");
+        }
+        return likesService.getMutualFilm(id, friendId).stream().map(this::findFilm).toList();
+    }
 }
