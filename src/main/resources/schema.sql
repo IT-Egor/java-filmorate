@@ -72,3 +72,13 @@ CREATE TABLE IF NOT EXISTS like_reviews (
     like_review INT NOT NULL,
     UNIQUE (review_id, user_id)
 );
+
+--лента событий
+create table if not exists feed (
+    event_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id    BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    timestamp  LONG  NOT NULL,
+    event_type VARCHAR(10) NOT NULL,
+    operation  VARCHAR(10) NOT NULL,
+    entity_id  BIGINT not null
+);
