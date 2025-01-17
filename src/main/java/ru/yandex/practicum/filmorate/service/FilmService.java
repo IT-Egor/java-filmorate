@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
+import ru.yandex.practicum.filmorate.model.*;
 
 import java.util.Collection;
 import java.util.List;
