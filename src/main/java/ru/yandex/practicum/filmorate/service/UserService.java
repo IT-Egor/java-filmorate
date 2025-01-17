@@ -77,7 +77,6 @@ public class UserService {
         }
     }
 
-
     public void removeUser(Long userId) {
         findUser(userId);
         userRepository.removeUser(userId);
