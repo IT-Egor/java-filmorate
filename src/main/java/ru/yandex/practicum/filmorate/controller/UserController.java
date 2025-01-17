@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -60,5 +63,10 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);
+    }
+
+    @GetMapping("/{userId}/recommendations")
+    public List<Optional<Film>> getRecommendations(@PathVariable Long userId) {
+        return userService.getRecommendation(userId);
     }
 }
