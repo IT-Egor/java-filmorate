@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,6 +54,15 @@ public class FilmRepository extends BaseRepository<Film> {
                 GROUP BY f.id
                 ORDER BY COUNT(l.id) DESC
                 LIMIT ?
+                """;
+
+        public static final String TITLE_FILTER = """
+                SELECT f.*
+                FROM films f
+                LEFT JOIN likes l ON f.id = l.film_id
+                WHERE f.name iLIKE ?
+                GROUP BY f.id
+                ORDER BY COUNT(l.id) DESC
                 """;
     }
 
@@ -108,6 +118,14 @@ public class FilmRepository extends BaseRepository<Film> {
     public void removeFilm(Long id) {
         String deleteFilmQuery = "DELETE from films where id = ?";
         update(deleteFilmQuery, id);
+    }
+
+    public Collection<Film> searchFilms(String query, List<String> searchFilters) {
+        if (searchFilters.contains("title")) {
+            return findMany(PopularFilmsSqlTemplates.TITLE_FILTER, String.format("%%%s%%", query));
+        } else {
+            throw new BadRequestException("Invalid search filters method");
+        }
     }
 
     public Collection<Film> getPopularFilms(Map<String, String> searchFilters) {

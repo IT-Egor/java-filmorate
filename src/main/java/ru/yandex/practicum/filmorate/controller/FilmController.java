@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.validator.annotations.SearchFilters;
 import ru.yandex.practicum.filmorate.validator.annotations.PopularFilmsFilters;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -63,7 +64,8 @@ public class FilmController {
                                            @SearchFilters
                                            @RequestParam
                                            Map<String, String> params) {
-        return filmService.searchFilms(params);
+
+        return filmService.searchFilms(params.get("query"), List.of(params.get("by").split(",")));
     }
 
     @GetMapping("/director/{directorId}")

@@ -45,8 +45,14 @@ public class FilmService {
         return mapFilmsToFilmsDTO(filmRepository.getPopularFilms(searchFilters));
     }
 
-    public Collection<FilmDTO> searchFilms(Map<String, String> searchFilters) {
-        return new ArrayList<>();
+    public Collection<FilmDTO> searchFilms(String query, List<String> searchFilters) {
+        return filmRepository.searchFilms(query, searchFilters).stream().map(film -> {
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
+
+            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
+
+            return FilmMapper.mapToFilmDTO(film, genres, mpa);
+        }).toList();
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
