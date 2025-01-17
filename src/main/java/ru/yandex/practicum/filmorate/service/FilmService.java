@@ -8,9 +8,7 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 
 import java.util.Collection;
@@ -26,11 +24,14 @@ public class FilmService {
     private final FilmGenreService filmGenreService;
     private final GenreService genreService;
     private final LikesService likesService;
+    private final EventService eventService;
+
 
     public void addLike(Long filmId, Long userId) {
         userService.findUser(userId);
         findFilm(filmId);
         likesService.addLike(filmId, userId);
+        eventService.createEvent(userId, EventType.LIKE, EventOperation.ADD, filmId);
     }
 
     public void removeLike(Long filmId, Long userId) {
@@ -38,6 +39,8 @@ public class FilmService {
         findFilm(filmId);
         if (!likesService.removeLike(filmId, userId)) {
             throw new BadRequestException(String.format("Film with id=%s already unliked by user with id=%s", filmId, userId));
+        } else {
+            eventService.createEvent(userId, EventType.LIKE, EventOperation.REMOVE, filmId);
         }
     }
 
