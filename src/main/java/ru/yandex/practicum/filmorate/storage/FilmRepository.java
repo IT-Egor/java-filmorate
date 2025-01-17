@@ -6,10 +6,22 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class FilmRepository extends BaseRepository<Film> {
+
+    private static class PopularFilmsSqlTemplates {
+        public static final String NO_FILTERS = """
+                SELECT f.*
+                FROM films f
+                LEFT JOIN likes l ON f.id = l.film_id
+                GROUP BY f.id
+                ORDER BY COUNT(l.id) DESC
+                LIMIT ?
+                """;
+    }
 
     public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
@@ -63,5 +75,9 @@ public class FilmRepository extends BaseRepository<Film> {
     public void removeFilm(Long id) {
         String deleteFilmQuery = "DELETE from films where id = ?";
         update(deleteFilmQuery, id);
+    }
+
+    public Collection<Film> getPopularFilms(Map<String, String> searchFilters) {
+        return findMany(PopularFilmsSqlTemplates.NO_FILTERS, searchFilters.get("count"));
     }
 }

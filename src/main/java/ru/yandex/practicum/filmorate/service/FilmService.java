@@ -41,10 +41,12 @@ public class FilmService {
         }
     }
 
-    public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        return likesService.getMostLikedFilms(filmsSelectionLength).stream()
-                .map(this::findFilm)
-                .toList();
+    public Collection<FilmDTO> getMostPopularFilms(Map<String, String> searchFilters) {
+        return filmRepository.getPopularFilms(searchFilters).stream().map(film -> {
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
+            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
+            return FilmMapper.mapToFilmDTO(film, genres, mpa);
+        }).toList();
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
@@ -85,6 +87,7 @@ public class FilmService {
         if (filmRepository.updateFilm(film) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
+
         filmGenreService.deleteFilmGenres(filmDTO.getId());
         filmDirectorService.deleteFilmDirectors(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
