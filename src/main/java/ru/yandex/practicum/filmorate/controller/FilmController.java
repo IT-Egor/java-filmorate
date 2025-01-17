@@ -76,6 +76,14 @@ public class FilmController {
         return filmService.getFilmsByDirectorId(directorId, sortBy);
     }
 
+    @GetMapping("/director/{directorId}")
+    public Collection<FilmDTO> getFilmsByDirector(
+            @PathVariable Long directorId,
+            @RequestParam(required = false, defaultValue = "year") String sortBy
+    ) {
+        return filmService.getFilmsByDirectorId(directorId, sortBy);
+    }
+
     @GetMapping("/{filmId}/likes")
     public Collection<LikeDTO> getLikes(@PathVariable Long filmId) {
         return filmService.getFilmLikes(filmId);
