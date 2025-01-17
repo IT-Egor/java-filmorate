@@ -105,4 +105,3 @@ CREATE TABLE IF NOT EXISTS like_reviews (
     like_review INT NOT NULL,
     UNIQUE (review_id, user_id)
 );
-J
