@@ -16,12 +16,14 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final EventService eventService;
 
     public ReviewDTO saveReview(ReviewDTO reviewDTO) {
         try {
             Review review = ReviewMapper.mapReviewDTOToReview(reviewDTO);
             checkFilmIdAndUserId(review);
             Long addedReviewId = reviewRepository.addReview(review);
+            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.ADD, addedReviewId);
             return findReview(addedReviewId);
         } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
@@ -40,15 +42,19 @@ public class ReviewService {
 
         if (reviewRepository.updateReview(review) == 0) {
             throw new NotFoundException(String.format("Review with id=%s not found", reviewDTO.getReviewId()));
+        } else {
+            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.UPDATE, reviewDTO.getReviewId());
         }
-
         return findReview(reviewDTO.getReviewId());
     }
 
     public void deleteReview(Long id) {
         findReview(id);
+        ReviewDTO review = findReview(id);
         if (!reviewRepository.deleteReview(id)) {
             throw new BadRequestException(String.format("Review with id=%s already deleted", id));
+        } else {
+            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.REMOVE, id);
         }
     }
 
