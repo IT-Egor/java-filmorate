@@ -45,6 +45,10 @@ public class FilmService {
         return mapFilmsToFilmsDTO(filmRepository.getPopularFilms(searchFilters));
     }
 
+    public Collection<FilmDTO> searchFilms(Map<String, String> searchFilters) {
+        return new ArrayList<>();
+    }
+
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
         findFilm(filmId);
         return likesService.getFilmLikes(filmId);

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.validator.annotations.SearchFilters;
 import ru.yandex.practicum.filmorate.validator.annotations.PopularFilmsFilters;
 
 import java.util.Collection;
@@ -55,6 +56,14 @@ public class FilmController {
                                                    @RequestParam Map<String, String> params) {
         params.putIfAbsent("count", "10");
         return filmService.getMostPopularFilms(params);
+    }
+
+    @GetMapping("/search")
+    public Collection<FilmDTO> searchFilms(@Valid
+                                           @SearchFilters
+                                           @RequestParam
+                                           Map<String, String> params) {
+        return filmService.searchFilms(params);
     }
 
     @GetMapping("/director/{directorId}")
