@@ -63,7 +63,6 @@ public class ReviewService {
     }
 
     public Collection<ReviewDTO> getReviewsOfFilm(Long filmId, int count) {
-
         if (filmId == 0) {
             return reviewRepository.getAllReviews().stream()
                 .map(ReviewMapper::mapToReviewDTO).toList();
@@ -77,7 +76,6 @@ public class ReviewService {
     }
 
     public void updateUsefulOfReview(Long reviewId, Long useful) {
-
         if (reviewRepository.updateUsefulOfReview(reviewId, useful) == 0) {
             throw new NotFoundException(String.format("Useful of review with id=%s: update error", reviewId));
         }

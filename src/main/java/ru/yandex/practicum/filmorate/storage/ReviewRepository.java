@@ -16,7 +16,7 @@ public class ReviewRepository extends BaseRepository<Review> {
     }
 
     public Long addReview(Review review) {
-        String insertQuery = "INSERT INTO reviews (film_id, user_id, content, isPositive) VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO reviews (film_id, user_id, content, is_positive) VALUES (?, ?, ?, ?)";
         return insert(insertQuery,
                 review.getFilmId(),
                 review.getUserId(),
@@ -25,7 +25,7 @@ public class ReviewRepository extends BaseRepository<Review> {
     }
 
     public Long updateReview(Review review) {
-        String updateQuery = "UPDATE reviews SET film_id = ?, user_id = ?, content = ?, isPositive = ? WHERE id = ?";
+        String updateQuery = "UPDATE reviews SET film_id = ?, user_id = ?, content = ?, is_positive = ? WHERE id = ?";
         return update(updateQuery,
                 review.getFilmId(),
                 review.getUserId(),
