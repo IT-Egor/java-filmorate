@@ -16,8 +16,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EventService {
-    final private EventRepository eventRepository;
-    final private UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
     public Collection<Event> getFeed(Long userId) {
         Optional.ofNullable(userRepository.findUser(userId))
