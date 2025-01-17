@@ -137,7 +137,7 @@ public class FilmRepository extends BaseRepository<Film> {
                     searchFilters.get("count"));
 
         } else {
-            throw new BadRequestException("Invalid search filters");
+            throw new BadRequestException("Invalid popular films filters");
         }
     }
 }
