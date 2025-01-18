@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS users, friends, ratings, films , likes , genres ,film_genres, reviews, like_reviews, feed, event_type, event_operation CASCADE;
+-- удалялка
+
+
 -- пользователи
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -73,12 +77,24 @@ CREATE TABLE IF NOT EXISTS like_reviews (
     UNIQUE (review_id, user_id)
 );
 
+-- операции
+CREATE TABLE IF NOT EXISTS event_operation (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL
+);
+
+-- типы событий
+CREATE TABLE IF NOT EXISTS event_type(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL
+);
+
 --лента событий
 CREATE TABLE IF NOT EXISTS  feed (
     event_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id   BIGINT REFERENCES users (id) ON DELETE CASCADE,
     TIMESTAMP  LONG  NOT NULL,
-    event_type VARCHAR NOT NULL,
-    operation  VARCHAR NOT NULL,
+    event_type_id BIGINT REFERENCES event_type(id),
+    event_operation_id  BIGINT REFERENCES event_operation(id),
     entity_id  BIGINT not null
 );

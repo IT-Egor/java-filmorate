@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.dto.ReviewDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.ReviewMapper;
+import ru.yandex.practicum.filmorate.model.EventOperation;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewRepository;
 
@@ -23,7 +25,7 @@ public class ReviewService {
             Review review = ReviewMapper.mapReviewDTOToReview(reviewDTO);
             checkFilmIdAndUserId(review);
             Long addedReviewId = reviewRepository.addReview(review);
-            eventService.createEvent(review.getUserId(), "REVIEW", "ADD", addedReviewId);
+            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.ADD, addedReviewId);
             return findReview(addedReviewId);
         } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
@@ -43,7 +45,7 @@ public class ReviewService {
         if (reviewRepository.updateReview(review) == 0) {
             throw new NotFoundException(String.format("Review with id=%s not found", reviewDTO.getReviewId()));
         } else {
-            eventService.createEvent(review.getUserId(), "REVIEW", "UPDATE", reviewDTO.getReviewId());
+            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.UPDATE, reviewDTO.getReviewId());
         }
         return findReview(reviewDTO.getReviewId());
     }
@@ -54,7 +56,7 @@ public class ReviewService {
         if (!reviewRepository.deleteReview(id)) {
             throw new BadRequestException(String.format("Review with id=%s already deleted", id));
         } else {
-            eventService.createEvent(review.getUserId(), "REVIEW", "REMOVE", id);
+            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.REMOVE, id);
         }
     }
 

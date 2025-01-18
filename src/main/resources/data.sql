@@ -48,3 +48,15 @@ VALUES
     (1, 3),
     (2, 1),
     (3, 2);
+
+MERGE INTO event_type (id, name) KEY(id)
+VALUES
+(1, 'LIKE'),
+(2, 'REVIEW'),
+(3, 'FRIEND');
+
+MERGE INTO event_operation (id, name) KEY(id)
+VALUES
+(1, 'REMOVE'),
+(2, 'ADD'),
+(3, 'UPDATE');

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.EventOperation;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.storage.EventRepository;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
@@ -23,7 +25,7 @@ public class EventService {
         return eventRepository.getFeed(userId);
     }
 
-    public Long createEvent(Long userId, String eventType, String eventOperation, Long entityId) {
+    public Long createEvent(Long userId, EventType eventType, EventOperation eventOperation, Long entityId) {
         Event event = new Event();
         event.setTimestamp(Instant.now().toEpochMilli());
         event.setUserId(userId);
@@ -31,6 +33,6 @@ public class EventService {
         event.setOperation(eventOperation);
         event.setEntityId(entityId);
 
-       return eventRepository.createEvent(event);
+        return eventRepository.createEvent(event);
     }
 }
