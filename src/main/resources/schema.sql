@@ -79,14 +79,12 @@ CREATE TABLE IF NOT EXISTS like_reviews (
 
 -- операции
 CREATE TABLE IF NOT EXISTS event_operation (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR PRIMARY KEY
 );
 
 -- типы событий
 CREATE TABLE IF NOT EXISTS event_type(
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR PRIMARY KEY
 );
 
 --лента событий
@@ -94,7 +92,7 @@ CREATE TABLE IF NOT EXISTS  feed (
     event_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id   BIGINT REFERENCES users (id) ON DELETE CASCADE,
     TIMESTAMP  LONG  NOT NULL,
-    event_type_id BIGINT REFERENCES event_type(id),
-    event_operation_id  BIGINT REFERENCES event_operation(id),
+    event_type_name VARCHAR REFERENCES event_type(name),
+    event_operation_name  VARCHAR REFERENCES event_operation(name),
     entity_id  BIGINT not null
 );

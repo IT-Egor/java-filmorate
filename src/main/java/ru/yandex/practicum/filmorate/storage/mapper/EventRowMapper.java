@@ -16,8 +16,8 @@ public class EventRowMapper implements RowMapper<Event> {
     public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
         Event event = new Event();
         event.setEventId(rs.getInt("event_id"));
-        event.setEventType(EventType.valueOf(rs.getString("event_type")));
-        event.setOperation(EventOperation.valueOf(rs.getString("operation")));
+        event.setEventType(EventType.valueOf(rs.getString("event_type_name")));
+        event.setOperation(EventOperation.valueOf(rs.getString("event_operation_name")));
         event.setTimestamp(rs.getLong("timestamp"));
         event.setUserId(rs.getInt("user_id"));
         event.setEntityId(rs.getInt("entity_id"));
