@@ -23,7 +23,7 @@ public class EventService {
         return eventRepository.getFeed(userId);
     }
 
-    public void createEvent(Long userId, String eventType, String eventOperation, Long entityId) {
+    public Long createEvent(Long userId, String eventType, String eventOperation, Long entityId) {
         Event event = new Event();
         event.setTimestamp(Instant.now().toEpochMilli());
         event.setUserId(userId);
@@ -31,6 +31,6 @@ public class EventService {
         event.setOperation(eventOperation);
         event.setEntityId(entityId);
 
-        eventRepository.createEvent(event);
+       return eventRepository.createEvent(event);
     }
 }
