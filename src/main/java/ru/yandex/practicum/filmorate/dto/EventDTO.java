@@ -11,7 +11,6 @@ public class EventDTO {
 
     private long eventId;
 
-    @NotNull(message = "Timestamp is required")
     private long timestamp;
 
     @Valid
