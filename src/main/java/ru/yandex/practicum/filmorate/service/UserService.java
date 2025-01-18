@@ -6,8 +6,6 @@ import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
-import ru.yandex.practicum.filmorate.model.EventOperation;
-import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
@@ -27,14 +25,14 @@ public class UserService {
         findUser(userId);
         findUser(friendId);
         friendService.addFriend(userId, friendId);
-        eventService.createEvent(userId, EventType.FRIEND, EventOperation.ADD, friendId);
+        eventService.createEvent(userId, "FRIEND", "ADD", friendId);
     }
 
     public void removeFriends(Long userId, Long friendId) {
         findUser(userId);
         findUser(friendId);
         friendService.removeFriend(userId, friendId);
-        eventService.createEvent(userId, EventType.FRIEND, EventOperation.REMOVE, friendId);
+        eventService.createEvent(userId, "FRIEND", "REMOVE", friendId);
     }
 
     public Collection<UserDTO> commonFriends(Long userId1, Long userId2) {

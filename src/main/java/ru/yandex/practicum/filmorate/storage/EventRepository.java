@@ -23,14 +23,14 @@ public class EventRepository extends BaseRepository<Event> {
     }
 
     public Long createEvent(Event event) {
-        String createEventQuery = "insert into feed (user_id, timestamp, event_type, operation, entity_id) values (?, ?, ?, ?, ?)";
+        String createEventQuery = "INSERT INTO feed (user_id, timestamp, event_type, operation, entity_id) values (?, ?, ?, ?, ?)";
 
         return insert(
                 createEventQuery,
                 event.getUserId(),
                 event.getTimestamp(),
-                event.getEventType().name(),
-                event.getOperation().name(),
+                event.getEventType(),
+                event.getOperation(),
                 event.getEntityId());
     }
 }

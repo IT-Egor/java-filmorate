@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Event;
-import ru.yandex.practicum.filmorate.model.EventOperation;
-import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.storage.EventRepository;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
@@ -21,11 +19,11 @@ public class EventService {
 
     public Collection<Event> getFeed(Long userId) {
         Optional.ofNullable(userRepository.findUser(userId))
-                .orElseThrow(() -> new NotFoundException("Пользователя с id=" + userId + " не существует"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id=%s not found", userId)));
         return eventRepository.getFeed(userId);
     }
 
-    public void createEvent(Long userId, EventType eventType, EventOperation eventOperation, Long entityId) {
+    public void createEvent(Long userId, String eventType, String eventOperation, Long entityId) {
         Event event = new Event();
         event.setTimestamp(Instant.now().toEpochMilli());
         event.setUserId(userId);

@@ -11,7 +11,7 @@ public class Event {
     private long eventId;
     private long timestamp;
     private long userId;
-    private EventType eventType;
-    private EventOperation operation;
+    private String eventType;
+    private String operation;
     private long entityId;
 }
