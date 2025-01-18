@@ -25,33 +25,12 @@ public class EventRepository extends BaseRepository<Event> {
     public Long createEvent(Event event) {
         String createEventQuery = "INSERT INTO feed (user_id, timestamp, event_type_name, event_operation_name, entity_id) values (?, ?, ?, ?, ?)";
 
-        String operationId = getOperationId(event.getOperation());
-        String entityTypeId = getEventTypeId(event.getEventType());
-
         return insert(
                 createEventQuery,
                 event.getUserId(),
                 event.getTimestamp(),
-                entityTypeId,
-                operationId,
+                event.getEventType().name(),
+                event.getOperation().name(),
                 event.getEntityId());
-    }
-
-    private String getOperationId(EventOperation eventOperation) {
-        return switch (eventOperation) {
-            case REMOVE -> "REMOVE";
-            case ADD -> "ADD";
-            case UPDATE -> "UPDATE";
-            default -> throw new IllegalArgumentException("Unknown operation type: " + eventOperation);
-        };
-    }
-
-    private String getEventTypeId(EventType eventType) {
-        return switch (eventType) {
-            case LIKE -> "LIKE";
-            case REVIEW -> "REVIEW";
-            case FRIEND -> "FRIEND";
-            default -> throw new IllegalArgumentException("Unknown event type: " + eventType);
-        };
     }
 }
