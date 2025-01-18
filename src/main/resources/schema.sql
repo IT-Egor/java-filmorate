@@ -94,5 +94,5 @@ CREATE TABLE IF NOT EXISTS  feed (
     TIMESTAMP LONG  NOT NULL,
     event_type_name VARCHAR REFERENCES event_type(name),
     event_operation_name VARCHAR REFERENCES event_operation(name),
-    entity_id  BIGINT not null
+    entity_id  BIGINT NOT NULL
 );
