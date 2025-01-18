@@ -31,14 +31,13 @@ public class DirectorService {
     }
 
     public DirectorDTO findDirectorDTOById(Long id) {
-        Director director = directorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Director with id %s not found", id)));
+        Director director = findDirectorById(id);
         return DirectorMapper.mapToDirectorDTO(director);
     }
 
     public DirectorDTO saveDirector(DirectorDTO directorDTO) {
         Director director = DirectorMapper.mapToDirector(directorDTO);
-        return findDirector(directorRepository.addDirector(director));
+        return findDirectorDTOById(directorRepository.addDirector(director));
     }
 
     public DirectorDTO updateDirector(DirectorDTO directorDTO) {
@@ -46,20 +45,11 @@ public class DirectorService {
         if (directorRepository.updateDirector(director) == 0) {
             throw new NotFoundException(String.format("Director with id=%s not found", director.getId()));
         }
-        return findDirector(director.getId());
+        return findDirectorDTOById(director.getId());
     }
 
     public void removeDirector(Long directorId) {
         directorRepository.removeDirector(directorId);
-    }
-
-    public DirectorDTO findDirector(Long id) {
-        Optional<Director> directorOpt = directorRepository.findById(id);
-        if (directorOpt.isPresent()) {
-            return DirectorMapper.mapToDirectorDTO(directorOpt.get());
-        } else {
-            throw new NotFoundException(String.format("Director with id=%s not found", id));
-        }
     }
 
     public List<Director> getDirectorsByFilmId(Long filmId) {
