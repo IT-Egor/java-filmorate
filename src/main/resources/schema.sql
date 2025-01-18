@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS users, friends, ratings, films , likes , genres ,film_genres, reviews, like_reviews, feed, event_type, event_operation CASCADE;
--- удалялка
-
-
 -- пользователи
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
