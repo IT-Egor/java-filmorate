@@ -67,7 +67,7 @@ public class FilmService {
         } else {
             throw new BadRequestException("This number of search filters is not supported");
         }
-        return mapFilmsToFilmsDTO(films);
+        return mapFilmsToFilmsDTO(likesService.sortFilmsByLikesCount(films));
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
@@ -160,23 +160,18 @@ public class FilmService {
     }
 
     private Collection<Film> findFilmsByTitle(String titleQuery) {
-        return likesService.sortFilmsByLikesCount(
-                filmRepository.findFilmsByTitle(titleQuery)
-        );
+        return filmRepository.findFilmsByTitle(titleQuery);
     }
 
     private Collection<Film> findFilmsByDirectorName(String directorNameQuery) {
-        return likesService.sortFilmsByLikesCount(
-                filmRepository.findFilmsByDirectorName(directorNameQuery)
-        );
+        return filmRepository.findFilmsByDirectorName(directorNameQuery);
     }
 
     private Collection<Film> findFilmsByTitleOrDirectorName(String titleOrDirectorQuery) {
-        return likesService.sortFilmsByLikesCount(
-                Stream.concat(
+        return Stream.concat(
                         findFilmsByTitle(titleOrDirectorQuery).stream(),
                         findFilmsByDirectorName(titleOrDirectorQuery).stream()
-                ).collect(Collectors.toSet())
+                ).collect(Collectors.toSet()
         );
     }
 }

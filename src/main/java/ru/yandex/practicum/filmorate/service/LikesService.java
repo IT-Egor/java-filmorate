@@ -35,9 +35,13 @@ public class LikesService {
         Map<Long, Long> filmLikesCount = new HashMap<>();
         sortedFilms.forEach(film -> filmLikesCount.put(film.getId(), getFilmLikesCount(film.getId())));
 
-        sortedFilms.sort(Comparator.comparing(
-                (Film film) -> filmLikesCount.get(film.getId())
-        ).reversed());
+        sortedFilms.sort((Film film1, Film film2) -> {
+            if (filmLikesCount.get(film1.getId()) == 0L && filmLikesCount.get(film2.getId()) == 0) {
+                return Long.compare(film1.getId(), film2.getId());
+            } else {
+                return Long.compare(filmLikesCount.get(film2.getId()), filmLikesCount.get(film1.getId()));
+            }
+        });
         return sortedFilms;
     }
 
