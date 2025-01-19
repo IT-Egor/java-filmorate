@@ -53,6 +53,20 @@ CREATE TABLE IF NOT EXISTS film_genres (
     UNIQUE (film_id, genre_id)
 );
 
+-- режиссеры
+CREATE TABLE IF NOT EXISTS directors (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- режиссеры фильмов
+CREATE TABLE IF NOT EXISTS film_directors (
+     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+     film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
+     director_id BIGINT REFERENCES directors(id) ON DELETE CASCADE,
+     UNIQUE (film_id, director_id)
+);
+
 -- отзывы на фильмы
 CREATE TABLE IF NOT EXISTS reviews (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

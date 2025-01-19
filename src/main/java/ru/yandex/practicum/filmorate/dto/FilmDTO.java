@@ -34,4 +34,8 @@ public class FilmDTO {
 
     @Valid
     private List<GenreDTO> genres;
+
+    @Valid
+    private List<DirectorDTO> directors;
+
 }

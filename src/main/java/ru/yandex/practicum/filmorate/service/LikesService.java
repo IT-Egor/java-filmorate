@@ -12,8 +12,8 @@ import java.util.List;
 public class LikesService {
     private final LikeRepository likeRepository;
 
-    public Long addLike(Long userId, Long filmId) {
-        return likeRepository.addLikeToFilm(userId, filmId);
+    public void addLike(Long userId, Long filmId) {
+        likeRepository.addLikeToFilm(userId, filmId);
     }
 
     public boolean removeLike(Long userId, Long filmId) {
