@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
@@ -78,6 +77,26 @@ public class FilmRepository extends BaseRepository<Film> {
     public Optional<Film> findFilm(long id) {
         String findByIdQuery = "SELECT * FROM films WHERE id = ?";
         return findOne(findByIdQuery, id);
+    }
+
+    public Collection<Film> findFilmsByTitle(String titleQuery) {
+        String findFilmByTitle = """
+            SELECT f.*
+            FROM films f
+            WHERE f.name iLIKE ?
+        """;
+        return findMany(findFilmByTitle, String.format("%%%s%%", titleQuery));
+    }
+
+    public Collection<Film> findFilmsByDirectorName(String directorNameQuery) {
+        String findFilmByTitle = """
+            SELECT DISTINCT f.*
+            FROM films f
+            INNER JOIN film_directors fd ON fd.film_id = f.id
+            INNER JOIN directors d ON d.id = fd.director_id
+            WHERE d.name iLIKE ?
+        """;
+        return findMany(findFilmByTitle, String.format("%%%s%%", directorNameQuery));
     }
 
     public Collection<Film> findFilmsByDirector(Long directorId, String sortBy) {

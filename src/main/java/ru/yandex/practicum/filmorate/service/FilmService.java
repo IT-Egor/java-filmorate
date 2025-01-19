@@ -9,10 +9,17 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -46,13 +53,21 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> searchFilms(String query, List<String> searchFilters) {
-        return filmRepository.searchFilms(query, searchFilters).stream().map(film -> {
-            Mpa mpa = mpaService.findMpaById(film.getMpaId());
-
-            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
-
-            return FilmMapper.mapToFilmDTO(film, genres, mpa);
-        }).toList();
+        Collection<Film> films;
+        if (searchFilters.size() == 1) {
+            if (searchFilters.contains("title")) {
+                films = findFilmsByTitle(query);
+            } else if (searchFilters.contains("director")) {
+                films = findFilmsByDirectorName(query);
+            } else {
+                throw new BadRequestException("Unknown search filter");
+            }
+        } else if (searchFilters.size() == 2) {
+            films = findFilmsByTitleOrDirectorName(query);
+        } else {
+            throw new BadRequestException("This number of search filters is not supported");
+        }
+        return mapFilmsToFilmsDTO(films);
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
@@ -142,5 +157,26 @@ public class FilmService {
 
             return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
         }).toList();
+    }
+
+    private Collection<Film> findFilmsByTitle(String titleQuery) {
+        return likesService.sortFilmsByLikesCount(
+                filmRepository.findFilmsByTitle(titleQuery)
+        );
+    }
+
+    private Collection<Film> findFilmsByDirectorName(String directorNameQuery) {
+        return likesService.sortFilmsByLikesCount(
+                filmRepository.findFilmsByDirectorName(directorNameQuery)
+        );
+    }
+
+    private Collection<Film> findFilmsByTitleOrDirectorName(String titleOrDirectorQuery) {
+        return likesService.sortFilmsByLikesCount(
+                Stream.concat(
+                        findFilmsByTitle(titleOrDirectorQuery).stream(),
+                        findFilmsByDirectorName(titleOrDirectorQuery).stream()
+                ).collect(Collectors.toSet())
+        );
     }
 }
