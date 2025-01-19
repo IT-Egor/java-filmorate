@@ -44,7 +44,7 @@ public class LikeRepository extends BaseRepository<Like> {
         return jdbc.queryForList(selectMostLikedFilms, Long.class, selectionLimit);
     }
 
-    public List<Long> getMutualFilm(Long userId, Long friendId) {
+    public List<Long> getCommonFilms(Long userId, Long friendId) {
         String sql =
                 "SELECT l.film_id " +
                         "FROM likes l " +

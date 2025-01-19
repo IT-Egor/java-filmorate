@@ -25,6 +25,10 @@ public class LikesService {
         return likeRepository.getFilmLikes(filmId).stream().map(LikeMapper::mapToLikeDTO).toList();
     }
 
+    public List<Long> getCommonFilms(Long userId, Long friendId) {
+        return likeRepository.getCommonFilms(userId, friendId);
+    }
+
     public Long getFilmLikesCount(Long filmId) {
         return likeRepository.getFilmLikesCount(filmId);
     }
@@ -42,9 +46,5 @@ public class LikesService {
             }
         });
         return sortedFilms;
-    }
-
-    public List<Long> getMutualFilm(Long userId, Long friendId) {
-        return likeRepository.getMutualFilm(userId, friendId);
     }
 }
