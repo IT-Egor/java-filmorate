@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS film_genres (
 -- режиссеры
 CREATE TABLE IF NOT EXISTS directors (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
+    name VARCHAR(50) NOT NULL
 );
 
 -- режиссеры фильмов
