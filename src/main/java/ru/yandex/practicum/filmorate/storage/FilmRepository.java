@@ -3,13 +3,58 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class FilmRepository extends BaseRepository<Film> {
+
+    private static class PopularFilmsSqlTemplates {
+        public static final String NO_FILTERS = """
+                SELECT f.*
+                FROM films f
+                LEFT JOIN likes l ON f.id = l.film_id
+                GROUP BY f.id
+                ORDER BY COUNT(l.id) DESC
+                LIMIT ?
+                """;
+
+        public static final String YEAR_FILTER = """
+                SELECT f.*
+                FROM films f
+                LEFT JOIN likes l ON f.id = l.film_id
+                WHERE EXTRACT(YEAR FROM f.release_date) = ?
+                GROUP BY f.id
+                ORDER BY COUNT(l.id) DESC
+                LIMIT ?
+                """;
+
+        public static final String GENRE_FILTER = """
+                SELECT f.*
+                FROM films f
+                INNER JOIN film_genres fg ON f.id = fg.film_id
+                LEFT JOIN likes l ON f.id = l.film_id
+                WHERE fg.genre_id = ?
+                GROUP BY f.id
+                ORDER BY COUNT(l.id) DESC
+                LIMIT ?
+                """;
+
+        public static final String YEAR_GENRE_FILTER = """
+                SELECT f.*
+                FROM films f
+                INNER JOIN film_genres fg ON f.id = fg.film_id
+                LEFT JOIN likes l ON f.id = l.film_id
+                WHERE fg.genre_id = ? AND EXTRACT(YEAR FROM f.release_date) = ?
+                GROUP BY f.id
+                ORDER BY COUNT(l.id) DESC
+                LIMIT ?
+                """;
+    }
 
     public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
@@ -63,5 +108,36 @@ public class FilmRepository extends BaseRepository<Film> {
     public void removeFilm(Long id) {
         String deleteFilmQuery = "DELETE from films where id = ?";
         update(deleteFilmQuery, id);
+    }
+
+    public Collection<Film> getPopularFilms(Map<String, String> searchFilters) {
+        if (searchFilters.size() == 1) {
+            return findMany(PopularFilmsSqlTemplates.NO_FILTERS, searchFilters.get("count"));
+
+        } else if (searchFilters.containsKey("year")
+                && !searchFilters.containsKey("genreId")
+                && searchFilters.size() == 2) {
+            return findMany(PopularFilmsSqlTemplates.YEAR_FILTER,
+                    searchFilters.get("year"),
+                    searchFilters.get("count"));
+
+        } else if (searchFilters.containsKey("genreId")
+                && !searchFilters.containsKey("year")
+                && searchFilters.size() == 2) {
+            return findMany(PopularFilmsSqlTemplates.GENRE_FILTER,
+                    searchFilters.get("genreId"),
+                    searchFilters.get("count"));
+
+        } else if (searchFilters.containsKey("genreId")
+                && searchFilters.containsKey("year")
+                && searchFilters.size() == 3) {
+            return findMany(PopularFilmsSqlTemplates.YEAR_GENRE_FILTER,
+                    searchFilters.get("genreId"),
+                    searchFilters.get("year"),
+                    searchFilters.get("count"));
+
+        } else {
+            throw new BadRequestException("Invalid popular films filters");
+        }
     }
 }

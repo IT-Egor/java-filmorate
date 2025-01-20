@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.validator.annotations.PopularFilmsFilters;
 
 import java.util.Collection;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
@@ -48,8 +50,11 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<FilmDTO> getMostPopularFilms(@RequestParam(required = false, defaultValue = "10", value = "count") int count) {
-        return filmService.getMostPopularFilms(count);
+    public Collection<FilmDTO> getMostPopularFilms(@Valid
+                                                   @PopularFilmsFilters
+                                                   @RequestParam Map<String, String> params) {
+        params.putIfAbsent("count", "10");
+        return filmService.getMostPopularFilms(params);
     }
 
     @GetMapping("/director/{directorId}")

@@ -45,23 +45,8 @@ public class FilmService {
         }
     }
 
-    public Collection<FilmDTO> getMostPopularFilms(int filmsSelectionLength) {
-        Collection<FilmDTO> allFilms = getAllFilms();
-        Collection<FilmDTO> likeFilms = new java.util.ArrayList<>(likesService.getMostLikedFilms(filmsSelectionLength).stream()
-                .map(this::findFilm)
-                .toList());
-
-        if (filmsSelectionLength > likeFilms.size()) {
-            for (FilmDTO film : allFilms) {
-                if (!likeFilms.contains(film)) {
-                    likeFilms.add(film);
-                }
-                if (filmsSelectionLength == likeFilms.size()) {
-                    return likeFilms;
-                }
-            }
-        }
-        return likeFilms;
+    public Collection<FilmDTO> getMostPopularFilms(Map<String, String> searchFilters) {
+        return mapFilmsToFilmsDTO(filmRepository.getPopularFilms(searchFilters));
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
@@ -102,6 +87,7 @@ public class FilmService {
         if (filmRepository.updateFilm(film) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
+
         filmGenreService.deleteFilmGenres(filmDTO.getId());
         filmDirectorService.deleteFilmDirectors(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
