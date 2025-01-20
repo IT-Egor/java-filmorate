@@ -19,6 +19,11 @@ public class LikeRepository extends BaseRepository<Like> {
         return findMany(selectFilmLikes, filmId);
     }
 
+    public Long getFilmLikesCount(Long filmId) {
+        String selectFilmLikesCount = "SELECT COUNT(*) FROM likes WHERE film_id = ?";
+        return jdbc.queryForObject(selectFilmLikesCount, Long.class, filmId);
+    }
+
     public void addLikeToFilm(Long filmId, Long userId) {
         String insert = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
         insert(insert, filmId, userId);

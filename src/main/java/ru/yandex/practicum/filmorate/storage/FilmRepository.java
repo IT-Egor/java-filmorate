@@ -70,6 +70,26 @@ public class FilmRepository extends BaseRepository<Film> {
         return findOne(findByIdQuery, id);
     }
 
+    public Collection<Film> findFilmsByTitle(String titleQuery) {
+        String findFilmByTitle = """
+            SELECT f.*
+            FROM films f
+            WHERE f.name iLIKE ?
+        """;
+        return findMany(findFilmByTitle, String.format("%%%s%%", titleQuery));
+    }
+
+    public Collection<Film> findFilmsByDirectorName(String directorNameQuery) {
+        String findFilmByTitle = """
+            SELECT DISTINCT f.*
+            FROM films f
+            INNER JOIN film_directors fd ON fd.film_id = f.id
+            INNER JOIN directors d ON d.id = fd.director_id
+            WHERE d.name iLIKE ?
+        """;
+        return findMany(findFilmByTitle, String.format("%%%s%%", directorNameQuery));
+    }
+
     public Collection<Film> findFilmsByDirector(Long directorId, String sortBy) {
         String sort = sortBy.equals("year") ? "release_date;" : "likes_count DESC;";
         String query = "SELECT f.*, COUNT(likes.id) as likes_count " +
