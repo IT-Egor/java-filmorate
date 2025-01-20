@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.*;
+
 
 @Service
 @AllArgsConstructor
@@ -171,6 +171,12 @@ public class FilmService {
             throw new NotFoundException("Id is not found");
         }
         return likesService.getCommonFilms(id, friendId).stream().map(this::findFilm).toList();
+    }
+
+    public List<FilmDTO> getRecommendation(Long userId) {
+        userService.findUser(userId);
+        List<Long> recommendedFilmIds = likesService.getRecommendedFilmIds(userId);
+        return recommendedFilmIds.stream().map(this::findFilm).toList();
     }
 
     private Collection<Film> findFilmsByTitle(String titleQuery) {

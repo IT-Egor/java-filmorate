@@ -5,10 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Like;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class LikeRepository extends BaseRepository<Like> {
@@ -65,30 +62,39 @@ public class LikeRepository extends BaseRepository<Like> {
         return jdbc.queryForList(sql, Long.class, userId, friendId);
     }
 
-    public Set<Long> getLikedMovies(Long userId) {
-        String sqlForMovies = "SELECT film_id FROM likes WHERE user_id = ?";
-        Set<Long> movies = new HashSet<>(jdbc.queryForList(sqlForMovies, Long.class, userId));
+    public List<Long> getRecommendedFilmIds(Long userId) {
+        List<Long> filmIdsToAvoid = getUserLikedFilmIds(userId);
+        List<Long> userIdsToRecommend = getUserIdsToRecommendFilmsForUser(userId);
 
-        String sqlForUser = "SELECT user_id" +
+        if (userIdsToRecommend.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        StringBuilder recommendationsSql = new StringBuilder("SELECT DISTINCT film_id FROM likes WHERE user_id IN (");
+        for (Long user : userIdsToRecommend) {
+            recommendationsSql.append(user).append(",");
+        }
+        recommendationsSql.setLength(recommendationsSql.length() - 1);
+
+        recommendationsSql.append(") AND film_id NOT IN (");
+        for (Long filmId : filmIdsToAvoid) {
+            recommendationsSql.append(filmId).append(",");
+        }
+        recommendationsSql.setLength(recommendationsSql.length() - 1);
+        recommendationsSql.append(")");
+
+        return jdbc.queryForList(String.valueOf(recommendationsSql), Long.class);
+    }
+
+    private List<Long> getUserLikedFilmIds(Long userId) {
+        String sqlForFilms = "SELECT DISTINCT film_id FROM likes WHERE user_id = ?";
+        return jdbc.queryForList(sqlForFilms, Long.class, userId);
+    }
+
+    private List<Long> getUserIdsToRecommendFilmsForUser(Long userId) {
+        String sqlForUser = "SELECT DISTINCT user_id" +
                 " FROM likes" +
                 " WHERE film_id IN (SELECT film_id FROM likes WHERE user_id = ?) AND user_id != ?";
-        Set<Long> users = new HashSet<>(jdbc.queryForList(sqlForUser, Long.class, userId, userId));
-
-        if (users.isEmpty()) {
-            return new HashSet<>();
-        }
-
-        StringBuilder lastSql = new StringBuilder("SELECT film_id FROM likes WHERE user_id IN (");
-        for (Long user : users) {
-            lastSql.append(user).append(",");
-        }
-        lastSql.setLength(lastSql.length() - 1);
-        lastSql.append(") AND film_id NOT IN (");
-        for (Long filmId : movies) {
-            lastSql.append(filmId).append(",");
-        }
-        lastSql.setLength(lastSql.length() - 1);
-        lastSql.append(")");
-        return new HashSet<>(jdbc.queryForList(String.valueOf(lastSql), Long.class));
+        return jdbc.queryForList(sqlForUser, Long.class, userId, userId);
     }
 }

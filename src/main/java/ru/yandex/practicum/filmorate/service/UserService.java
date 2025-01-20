@@ -8,13 +8,15 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 import ru.yandex.practicum.filmorate.storage.LikeRepository;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -82,12 +84,5 @@ public class UserService {
     public void removeUser(Long userId) {
         findUser(userId);
         userRepository.removeUser(userId);
-    }
-
-    public List<Optional<Film>> getRecommendation(Long userId) {
-        if (findUser(userId) != null) {
-            Set<Long> listLikedFilms = likeRepository.getLikedMovies(userId);
-            return listLikedFilms.stream().map(filmRepository::findFilm).toList();
-        } else throw new NotFoundException("Id not found");
     }
 }

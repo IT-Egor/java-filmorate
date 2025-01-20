@@ -4,16 +4,16 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.service.EventService;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -22,6 +22,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final EventService eventService;
+    private final FilmService filmService;
 
     @GetMapping
     public Collection<UserDTO> getUsers() {
@@ -74,7 +75,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/recommendations")
-    public List<Optional<Film>> getRecommendations(@PathVariable Long userId) {
-        return userService.getRecommendation(userId);
+    public List<FilmDTO> getRecommendations(@PathVariable Long userId) {
+        return filmService.getRecommendation(userId);
     }
 }
