@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
 -- друзья
 CREATE TABLE IF NOT EXISTS friends (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-    friend_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id),
+    friend_id BIGINT REFERENCES users(id),
     UNIQUE (user_id, friend_id)
 );
 
@@ -49,60 +49,6 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS film_genres (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
-    genre_id BIGINT REFERENCES genres(id) ON DELETE CASCADE,
+    genre_id BIGINT REFERENCES genres(id),
     UNIQUE (film_id, genre_id)
-);
-
--- режиссеры
-CREATE TABLE IF NOT EXISTS directors (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-
--- режиссеры фильмов
-CREATE TABLE IF NOT EXISTS film_directors (
-     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-     film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
-     director_id BIGINT REFERENCES directors(id) ON DELETE CASCADE,
-     UNIQUE (film_id, director_id)
-);
-
--- отзывы на фильмы
-CREATE TABLE IF NOT EXISTS reviews (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    film_id BIGINT REFERENCES films(id) ON DELETE CASCADE,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-    content VARCHAR NOT NULL,
-    is_positive BOOLEAN,
-    useful BIGINT DEFAULT 0,
-    UNIQUE (film_id, user_id)
-);
-
--- оценка на отзывы
-CREATE TABLE IF NOT EXISTS like_reviews (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    review_id BIGINT REFERENCES reviews(id) ON DELETE CASCADE,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-    like_review INT NOT NULL,
-    UNIQUE (review_id, user_id)
-);
-
--- операции
-CREATE TABLE IF NOT EXISTS event_operation (
-    name VARCHAR PRIMARY KEY
-);
-
--- типы событий
-CREATE TABLE IF NOT EXISTS event_type(
-    name VARCHAR PRIMARY KEY
-);
-
---лента событий
-CREATE TABLE IF NOT EXISTS  feed (
-    event_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
-    TIMESTAMP LONG NOT NULL,
-    event_type_name VARCHAR REFERENCES event_type(name),
-    event_operation_name VARCHAR REFERENCES event_operation(name),
-    entity_id  BIGINT NOT NULL
 );
