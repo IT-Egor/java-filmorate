@@ -44,8 +44,4 @@ public class LikesService {
         });
         return sortedFilms;
     }
-
-    public List<Long> getMostLikedFilms(int selectionLimit) {
-        return likeRepository.getMostLikedFilmsIds(selectionLimit);
-    }
 }
