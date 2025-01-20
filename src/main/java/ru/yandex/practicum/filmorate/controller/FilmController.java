@@ -7,12 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.validator.annotations.SearchFilters;
-import ru.yandex.practicum.filmorate.validator.annotations.PopularFilmsFilters;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
@@ -52,42 +48,12 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<FilmDTO> getMostPopularFilms(@Valid
-                                                   @PopularFilmsFilters
-                                                   @RequestParam Map<String, String> params) {
-        params.putIfAbsent("count", "10");
-        return filmService.getMostPopularFilms(params);
-    }
-
-    @GetMapping("/search")
-    public Collection<FilmDTO> searchFilms(@Valid
-                                           @SearchFilters
-                                           @RequestParam
-                                           Map<String, String> params) {
-
-        return filmService.searchFilms(params.get("query"), List.of(params.get("by").split(",")));
-    }
-
-    @GetMapping("/director/{directorId}")
-    public Collection<FilmDTO> getFilmsByDirector(
-            @PathVariable Long directorId,
-            @RequestParam(required = false, defaultValue = "year") String sortBy
-    ) {
-        return filmService.getFilmsByDirectorId(directorId, sortBy);
+    public Collection<FilmDTO> getMostPopularFilms(@RequestParam(required = false, defaultValue = "10", value = "count") int count) {
+        return filmService.getMostPopularFilms(count);
     }
 
     @GetMapping("/{filmId}/likes")
     public Collection<LikeDTO> getLikes(@PathVariable Long filmId) {
         return filmService.getFilmLikes(filmId);
-    }
-
-    @DeleteMapping("/{filmId}")
-    public void removeFilm(@PathVariable Long filmId) {
-        filmService.removeFilm(filmId);
-    }
-
-    @GetMapping("/common")
-    public List<FilmDTO> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
-        return filmService.getCommonFilms(userId, friendId);
     }
 }
