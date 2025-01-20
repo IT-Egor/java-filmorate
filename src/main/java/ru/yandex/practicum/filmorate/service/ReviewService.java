@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewRepository;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -80,7 +81,7 @@ public class ReviewService {
             return reviewRepository.getReviewsOfFilm(filmId, count).stream()
                     .map(ReviewMapper::mapToReviewDTO).toList();
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public void updateUsefulOfReview(Long reviewId, Long useful) {
@@ -95,6 +96,12 @@ public class ReviewService {
         }
         if (review.getFilmId() < 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", review.getUserId()));
+        }
+        if (review.getUserId() == 0) {
+            throw new BadRequestException("User id is null");
+        }
+        if (review.getFilmId() == 0) {
+            throw new BadRequestException("Film id is null");
         }
     }
 
