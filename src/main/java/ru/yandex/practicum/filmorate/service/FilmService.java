@@ -164,6 +164,13 @@ public class FilmService {
         }).toList();
     }
 
+    public List<FilmDTO> getCommonFilms(Long id, Long friendId) {
+        if (userService.findUser(id) == null || userService.findUser(friendId) == null) {
+            throw new NotFoundException("Id is not found");
+        }
+        return likesService.getCommonFilms(id, friendId).stream().map(this::findFilm).toList();
+    }
+
     private Collection<Film> findFilmsByTitle(String titleQuery) {
         return filmRepository.findFilmsByTitle(titleQuery);
     }
