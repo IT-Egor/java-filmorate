@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewRepository;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -45,7 +46,8 @@ public class ReviewService {
         if (reviewRepository.updateReview(review) == 0) {
             throw new NotFoundException(String.format("Review with id=%s not found", reviewDTO.getReviewId()));
         } else {
-            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.UPDATE, reviewDTO.getReviewId());
+            ReviewDTO oldReview = findReview(reviewDTO.getReviewId());
+            eventService.createEvent(oldReview.getUserId(), EventType.REVIEW, EventOperation.UPDATE, oldReview.getReviewId());
         }
         return findReview(reviewDTO.getReviewId());
     }
@@ -80,7 +82,7 @@ public class ReviewService {
             return reviewRepository.getReviewsOfFilm(filmId, count).stream()
                     .map(ReviewMapper::mapToReviewDTO).toList();
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public void updateUsefulOfReview(Long reviewId, Long useful) {
@@ -95,6 +97,12 @@ public class ReviewService {
         }
         if (review.getFilmId() < 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", review.getUserId()));
+        }
+        if (review.getUserId() == 0) {
+            throw new BadRequestException("User id is null");
+        }
+        if (review.getFilmId() == 0) {
+            throw new BadRequestException("Film id is null");
         }
     }
 

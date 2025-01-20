@@ -151,6 +151,7 @@ public class FilmService {
     }
 
     public Collection<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy) {
+        directorService.findDirectorById(directorId);
         Collection<Film> films = filmRepository.findFilmsByDirector(directorId, sortBy);
         return mapFilmsToFilmsDTO(films);
     }

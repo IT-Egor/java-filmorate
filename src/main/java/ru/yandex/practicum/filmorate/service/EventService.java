@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.EventRepository;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
@@ -20,9 +21,12 @@ public class EventService {
     private final UserRepository userRepository;
 
     public Collection<Event> getFeed(Long userId) {
-        Optional.ofNullable(userRepository.findUser(userId))
-                .orElseThrow(() -> new NotFoundException(String.format("User with id=%s not found", userId)));
-        return eventRepository.getFeed(userId);
+        Optional<User> userOpt = userRepository.findUser(userId);
+        if (userOpt.isPresent()) {
+            return eventRepository.getFeed(userId);
+        } else {
+            throw new NotFoundException(String.format("User with id=%s not found", userId));
+        }
     }
 
     public Long createEvent(Long userId, EventType eventType, EventOperation eventOperation, Long entityId) {

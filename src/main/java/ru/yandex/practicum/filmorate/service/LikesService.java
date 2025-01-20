@@ -13,8 +13,10 @@ import java.util.*;
 public class LikesService {
     private final LikeRepository likeRepository;
 
-    public void addLike(Long userId, Long filmId) {
-        likeRepository.addLikeToFilm(userId, filmId);
+    public void addLike(Long filmId, Long userId) {
+        if (likeRepository.findLikeByUserAndFilm(userId, filmId).isEmpty()) {
+            likeRepository.addLikeToFilm(filmId, userId);
+        }
     }
 
     public boolean removeLike(Long userId, Long filmId) {
