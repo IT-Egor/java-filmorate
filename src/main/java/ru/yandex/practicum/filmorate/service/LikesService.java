@@ -23,8 +23,4 @@ public class LikesService {
     public List<LikeDTO> getFilmLikes(Long filmId) {
         return likeRepository.getFilmLikes(filmId).stream().map(LikeMapper::mapToLikeDTO).toList();
     }
-
-    public List<Long> getMostLikedFilms(int selectionLimit) {
-        return likeRepository.getMostLikedFilmsIds(selectionLimit);
-    }
 }
