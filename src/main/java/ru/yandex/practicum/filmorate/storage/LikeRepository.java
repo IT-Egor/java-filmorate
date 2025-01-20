@@ -5,8 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Like;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class LikeRepository extends BaseRepository<Like> {
@@ -61,5 +60,41 @@ public class LikeRepository extends BaseRepository<Like> {
                         "ORDER BY COUNT(l.user_id) DESC;";
 
         return jdbc.queryForList(sql, Long.class, userId, friendId);
+    }
+
+    public List<Long> getRecommendedFilmIds(Long userId) {
+        List<Long> filmIdsToAvoid = getUserLikedFilmIds(userId);
+        List<Long> userIdsToRecommend = getUserIdsToRecommendFilmsForUser(userId);
+
+        if (userIdsToRecommend.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        StringBuilder recommendationsSql = new StringBuilder("SELECT DISTINCT film_id FROM likes WHERE user_id IN (");
+        for (Long user : userIdsToRecommend) {
+            recommendationsSql.append(user).append(",");
+        }
+        recommendationsSql.setLength(recommendationsSql.length() - 1);
+
+        recommendationsSql.append(") AND film_id NOT IN (");
+        for (Long filmId : filmIdsToAvoid) {
+            recommendationsSql.append(filmId).append(",");
+        }
+        recommendationsSql.setLength(recommendationsSql.length() - 1);
+        recommendationsSql.append(")");
+
+        return jdbc.queryForList(String.valueOf(recommendationsSql), Long.class);
+    }
+
+    private List<Long> getUserLikedFilmIds(Long userId) {
+        String sqlForFilms = "SELECT DISTINCT film_id FROM likes WHERE user_id = ?";
+        return jdbc.queryForList(sqlForFilms, Long.class, userId);
+    }
+
+    private List<Long> getUserIdsToRecommendFilmsForUser(Long userId) {
+        String sqlForUser = "SELECT DISTINCT user_id" +
+                " FROM likes" +
+                " WHERE film_id IN (SELECT film_id FROM likes WHERE user_id = ?) AND user_id != ?";
+        return jdbc.queryForList(sqlForUser, Long.class, userId, userId);
     }
 }

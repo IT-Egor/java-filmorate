@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmRepository;
+import ru.yandex.practicum.filmorate.storage.LikeRepository;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final FriendService friendService;
     private final EventService eventService;
+    private final LikeRepository likeRepository;
+    private final FilmRepository filmRepository;
 
     public void makeFriends(Long userId, Long friendId) {
         findUser(userId);

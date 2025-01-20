@@ -47,4 +47,8 @@ public class LikesService {
         });
         return sortedFilms;
     }
+
+    public List<Long> getRecommendedFilmIds(Long userId) {
+        return likeRepository.getRecommendedFilmIds(userId);
+    }
 }
