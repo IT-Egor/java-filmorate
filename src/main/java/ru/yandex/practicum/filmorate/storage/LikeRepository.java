@@ -33,14 +33,9 @@ public class LikeRepository extends BaseRepository<Like> {
         return delete(delete, filmId, userId);
     }
 
-    public List<Long> getMostLikedFilmsIds(int selectionLimit) {
-        String selectMostLikedFilms =
-                "SELECT film_id " +
-                        "FROM likes " +
-                        "GROUP BY film_id " +
-                        "ORDER BY COUNT(*) DESC " +
-                        "LIMIT ?";
-        return jdbc.queryForList(selectMostLikedFilms, Long.class, selectionLimit);
+    public Optional<Like> findLikeByUserAndFilm(Long userId, Long filmId) {
+        String findLike = "SELECT * FROM likes WHERE user_id = ? AND film_id = ?";
+        return findOne(findLike, userId, filmId);
     }
 
     public List<Long> getCommonFilms(Long userId, Long friendId) {
