@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
@@ -16,6 +18,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final EventService eventService;
 
     @GetMapping
     public Collection<UserDTO> getUsers() {
@@ -60,5 +63,10 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);
+    }
+
+    @GetMapping("{id}/feed")
+    public Collection<Event> getFeed(@PathVariable Long id) {
+        return eventService.getFeed(id);
     }
 }
