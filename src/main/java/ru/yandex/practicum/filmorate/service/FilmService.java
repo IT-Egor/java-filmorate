@@ -9,10 +9,18 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -47,6 +55,24 @@ public class FilmService {
 
     public Collection<FilmDTO> getMostPopularFilms(Map<String, String> searchFilters) {
         return mapFilmsToFilmsDTO(filmRepository.getPopularFilms(searchFilters));
+    }
+
+    public Collection<FilmDTO> searchFilms(String query, List<String> searchFilters) {
+        Collection<Film> films;
+        if (searchFilters.size() == 1) {
+            if (searchFilters.contains("title")) {
+                films = findFilmsByTitle(query);
+            } else if (searchFilters.contains("director")) {
+                films = findFilmsByDirectorName(query);
+            } else {
+                throw new BadRequestException("Unknown search filter");
+            }
+        } else if (searchFilters.size() == 2) {
+            films = findFilmsByTitleOrDirectorName(query);
+        } else {
+            throw new BadRequestException("This number of search filters is not supported");
+        }
+        return mapFilmsToFilmsDTO(likesService.sortFilmsByLikesCount(films));
     }
 
     public Collection<LikeDTO> getFilmLikes(Long filmId) {
@@ -136,5 +162,21 @@ public class FilmService {
 
             return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
         }).toList();
+    }
+
+    private Collection<Film> findFilmsByTitle(String titleQuery) {
+        return filmRepository.findFilmsByTitle(titleQuery);
+    }
+
+    private Collection<Film> findFilmsByDirectorName(String directorNameQuery) {
+        return filmRepository.findFilmsByDirectorName(directorNameQuery);
+    }
+
+    private Collection<Film> findFilmsByTitleOrDirectorName(String titleOrDirectorQuery) {
+        return Stream.concat(
+                        findFilmsByTitle(titleOrDirectorQuery).stream(),
+                        findFilmsByDirectorName(titleOrDirectorQuery).stream()
+                ).collect(Collectors.toSet()
+        );
     }
 }

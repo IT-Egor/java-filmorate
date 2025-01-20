@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.LikeRepository;
-import java.util.List;
+
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -22,5 +24,24 @@ public class LikesService {
 
     public List<LikeDTO> getFilmLikes(Long filmId) {
         return likeRepository.getFilmLikes(filmId).stream().map(LikeMapper::mapToLikeDTO).toList();
+    }
+
+    public Long getFilmLikesCount(Long filmId) {
+        return likeRepository.getFilmLikesCount(filmId);
+    }
+
+    public List<Film> sortFilmsByLikesCount(Collection<Film> filmsToSort) {
+        ArrayList<Film> sortedFilms = new ArrayList<>(filmsToSort);
+        Map<Long, Long> filmLikesCount = new HashMap<>();
+        sortedFilms.forEach(film -> filmLikesCount.put(film.getId(), getFilmLikesCount(film.getId())));
+
+        sortedFilms.sort((Film film1, Film film2) -> {
+            if (filmLikesCount.get(film1.getId()) == 0L && filmLikesCount.get(film2.getId()) == 0) {
+                return Long.compare(film1.getId(), film2.getId());
+            } else {
+                return Long.compare(filmLikesCount.get(film2.getId()), filmLikesCount.get(film1.getId()));
+            }
+        });
+        return sortedFilms;
     }
 }

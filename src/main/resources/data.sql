@@ -49,6 +49,19 @@ VALUES
     (2, 1),
     (3, 2);
 
+INSERT INTO directors (name)
+VALUES
+    ('Василий Пупкин'),
+    ('Иванов Иван'),
+    ('Сидоров Сергей');
+
+INSERT INTO film_directors (film_id, director_id)
+VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (3, 1);
+
 MERGE INTO event_type (name) KEY(name)
 VALUES
 ('LIKE'),
