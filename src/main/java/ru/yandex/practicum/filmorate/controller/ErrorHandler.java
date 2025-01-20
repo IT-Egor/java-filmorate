@@ -5,6 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -12,6 +13,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -47,6 +49,18 @@ public class ErrorHandler {
         return new ErrorResponse(Objects.requireNonNull(
                 e.getBindingResult().getFieldError()).getDefaultMessage(),
                 LocalDateTime.now(), 400);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodValidationException(HandlerMethodValidationException e) {
+        ArrayList<String> errors = new ArrayList<>();
+        e.getAllValidationResults().forEach(result ->
+                result.getResolvableErrors().forEach(
+                        resolvableError -> errors.add(resolvableError.getDefaultMessage())
+                )
+        );
+        return new ErrorResponse(String.join(", ",errors), LocalDateTime.now(), 400);
     }
 
     @ExceptionHandler

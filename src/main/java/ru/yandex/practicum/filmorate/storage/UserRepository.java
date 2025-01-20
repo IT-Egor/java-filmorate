@@ -33,4 +33,10 @@ public class UserRepository extends BaseRepository<User> {
         String selectOne = "SELECT * FROM users WHERE id = ?";
         return findOne(selectOne, id);
     }
+
+    public void removeUser(Long id) {
+        String deleteUserQuery = "DELETE FROM users WHERE id = ?";
+        update(deleteUserQuery, id);
+    }
+
 }
