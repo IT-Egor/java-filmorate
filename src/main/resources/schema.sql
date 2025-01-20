@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS event_type(
 CREATE TABLE IF NOT EXISTS  feed (
     event_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
-    TIMESTAMP LONG  NOT NULL,
+    TIMESTAMP LONG NOT NULL,
     event_type_name VARCHAR REFERENCES event_type(name),
     event_operation_name VARCHAR REFERENCES event_operation(name),
     entity_id  BIGINT NOT NULL

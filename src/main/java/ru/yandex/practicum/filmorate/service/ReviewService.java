@@ -46,7 +46,8 @@ public class ReviewService {
         if (reviewRepository.updateReview(review) == 0) {
             throw new NotFoundException(String.format("Review with id=%s not found", reviewDTO.getReviewId()));
         } else {
-            eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.UPDATE, reviewDTO.getReviewId());
+            ReviewDTO oldReview = findReview(reviewDTO.getReviewId());
+            eventService.createEvent(oldReview.getUserId(), EventType.REVIEW, EventOperation.UPDATE, oldReview.getReviewId());
         }
         return findReview(reviewDTO.getReviewId());
     }
