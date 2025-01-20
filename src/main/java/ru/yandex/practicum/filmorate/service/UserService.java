@@ -9,8 +9,6 @@ import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.FilmRepository;
-import ru.yandex.practicum.filmorate.storage.LikeRepository;
 import ru.yandex.practicum.filmorate.storage.UserRepository;
 
 import java.util.ArrayList;
@@ -24,8 +22,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final FriendService friendService;
     private final EventService eventService;
-    private final LikeRepository likeRepository;
-    private final FilmRepository filmRepository;
 
     public void makeFriends(Long userId, Long friendId) {
         findUser(userId);
@@ -61,12 +57,12 @@ public class UserService {
 
     public UserDTO saveUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
-        return findUser(userRepository.addUser(user));
+        return findUser(userRepository.addUser(fixUserNameIfNull(user)));
     }
 
     public UserDTO updateUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
-        if (userRepository.updateUser(user) == 0) {
+        if (userRepository.updateUser(fixUserNameIfNull(user)) == 0) {
             throw new NotFoundException(String.format("User with id=%s not found", user.getId()));
         }
         return findUser(user.getId());
@@ -84,5 +80,13 @@ public class UserService {
     public void removeUser(Long userId) {
         findUser(userId);
         userRepository.removeUser(userId);
+    }
+
+
+    private User fixUserNameIfNull(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        return user;
     }
 }
