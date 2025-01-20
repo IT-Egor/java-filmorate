@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.LikeRepository;
-
 import java.util.*;
 
 @Service
@@ -24,6 +23,10 @@ public class LikesService {
 
     public List<LikeDTO> getFilmLikes(Long filmId) {
         return likeRepository.getFilmLikes(filmId).stream().map(LikeMapper::mapToLikeDTO).toList();
+    }
+
+    public List<Long> getCommonFilms(Long userId, Long friendId) {
+        return likeRepository.getCommonFilms(userId, friendId);
     }
 
     public Long getFilmLikesCount(Long filmId) {

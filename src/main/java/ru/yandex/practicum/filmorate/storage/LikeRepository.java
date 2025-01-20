@@ -37,10 +37,29 @@ public class LikeRepository extends BaseRepository<Like> {
     public List<Long> getMostLikedFilmsIds(int selectionLimit) {
         String selectMostLikedFilms =
                 "SELECT film_id " +
-                "FROM likes " +
-                "GROUP BY film_id " +
-                "ORDER BY COUNT(*) DESC " +
-                "LIMIT ?";
+                        "FROM likes " +
+                        "GROUP BY film_id " +
+                        "ORDER BY COUNT(*) DESC " +
+                        "LIMIT ?";
         return jdbc.queryForList(selectMostLikedFilms, Long.class, selectionLimit);
+    }
+
+    public List<Long> getCommonFilms(Long userId, Long friendId) {
+        String sql =
+                "SELECT l.film_id " +
+                        "FROM likes l " +
+                        "WHERE l.film_id IN (" +
+                        "    SELECT film_id " +
+                        "    FROM likes " +
+                        "    WHERE user_id = ? " +
+                        ") AND l.film_id IN (" +
+                        "    SELECT film_id " +
+                        "    FROM likes " +
+                        "    WHERE user_id = ? " +
+                        ") " +
+                        "GROUP BY l.film_id " +
+                        "ORDER BY COUNT(l.user_id) DESC;";
+
+        return jdbc.queryForList(sql, Long.class, userId, friendId);
     }
 }
