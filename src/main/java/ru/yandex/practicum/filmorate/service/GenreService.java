@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -36,15 +33,11 @@ public class GenreService {
         }
     }
 
-    public void addGenresToFilm(List<Long> genresIds, Long filmId) {
-        genreRepository.batchInsert(genresIds, filmId);
-    }
-
     public List<Genre> getGenresByFilmId(Long filmId) {
         return new ArrayList<>(genreRepository.getGenresByFilmId(filmId));
     }
 
-    public boolean deleteFilmGenres(Long filmId) {
-        return genreRepository.deleteFilmGenres(filmId);
+    public Map<Long, List<Genre>> findAllByManyFilmIds(Collection<Long> filmIds) {
+        return genreRepository.findAllByManyFilmIds(filmIds);
     }
 }

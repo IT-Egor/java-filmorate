@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -72,5 +69,9 @@ public class DirectorService {
         } else {
             return directorDTOs.stream().distinct().map(directorDTO -> findDirectorDTOById(directorDTO.getId())).toList();
         }
+    }
+
+    public Map<Long, List<Director>> findAllByManyFilmIds(Collection<Long> filmIds) {
+        return directorRepository.findAllByManyFilmIds(filmIds);
     }
 }
