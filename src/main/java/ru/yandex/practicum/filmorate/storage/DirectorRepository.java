@@ -49,19 +49,6 @@ public class DirectorRepository extends BaseRepository<Director> {
         return findMany(selectAllByFilmId, filmId);
     }
 
-    public void batchInsert(List<Long> directorIds, long filmId) {
-        connectingTablesBatchInsert("film_directors",
-                "director_id",
-                "film_id",
-                directorIds,
-                filmId);
-    }
-
-    public void deleteFilmDirectors(Long filmId) {
-        String deleteFilmDirectors = "DELETE FROM film_directors WHERE film_id = ?";
-        delete(deleteFilmDirectors, filmId);
-    }
-
     public Map<Long, List<Director>> findAllByManyFilmIds(Collection<Long> filmIds) {
         String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
         String selectAllByManyIds = String.format("""
