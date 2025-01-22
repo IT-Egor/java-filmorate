@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.FilmGenre;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -37,11 +36,6 @@ public class FilmGenreRepository extends BaseRepository<FilmGenre> {
         } catch (DataIntegrityViolationException e) {
             throw new BadRequestException("Data integrity violation");
         }
-    }
-
-    public Collection<FilmGenre> findAllByFilmId(Long filmId) {
-        String selectAllByFilmId = "SELECT * FROM film_genres WHERE film_id = ?";
-        return findMany(selectAllByFilmId, filmId);
     }
 
     public boolean deleteFilmGenres(Long filmId) {

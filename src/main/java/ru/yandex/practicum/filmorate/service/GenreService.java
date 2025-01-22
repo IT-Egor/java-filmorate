@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.GenreDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.GenreMapper;
-import ru.yandex.practicum.filmorate.model.FilmGenre;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmGenreRepository;
 import ru.yandex.practicum.filmorate.storage.GenreRepository;
@@ -31,11 +30,6 @@ public class GenreService {
         return genreRepository.findAll().stream().map(GenreMapper::mapToGenreDTO).sorted(Comparator.comparing(GenreDTO::getId)).toList();
     }
 
-    public Genre findGenreById(Long id) {
-        return genreRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Genre with id %s not found", id)));
-    }
-
     public List<GenreDTO> fixIfNullOrWithDuplicates(List<GenreDTO> genreDTOs) {
         if (genreDTOs == null) {
             return new ArrayList<>();
@@ -49,10 +43,7 @@ public class GenreService {
     }
 
     public List<Genre> getGenresByFilmId(Long filmId) {
-        List<FilmGenre> filmGenres = new ArrayList<>(filmGenreRepository.findAllByFilmId(filmId));
-        return filmGenres.stream().map(filmGenre ->
-                findGenreById(filmGenre.getGenreId())
-        ).toList();
+        return new ArrayList<>(genreRepository.getGenresByFilmId(filmId));
     }
 
     public boolean deleteFilmGenres(Long filmId) {

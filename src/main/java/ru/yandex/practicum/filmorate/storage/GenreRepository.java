@@ -23,4 +23,14 @@ public class GenreRepository extends BaseRepository<Genre> {
         String selectAll = "SELECT * FROM genres";
         return findMany(selectAll);
     }
+
+    public Collection<Genre> getGenresByFilmId(Long filmId) {
+        String selectAllByFilmId = """
+                SELECT g.*
+                FROM genres g
+                INNER JOIN film_genres fg ON g.id = fg.genre_id
+                WHERE fg.film_id = ?
+                """;
+        return findMany(selectAllByFilmId, filmId);
+    }
 }
