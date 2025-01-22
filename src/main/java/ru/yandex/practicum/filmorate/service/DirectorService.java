@@ -6,9 +6,7 @@ import ru.yandex.practicum.filmorate.dto.DirectorDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.FilmDirector;
 import ru.yandex.practicum.filmorate.storage.DirectorRepository;
-import ru.yandex.practicum.filmorate.storage.FilmDirectorRepository;
 
 import java.util.*;
 
@@ -16,7 +14,6 @@ import java.util.*;
 @AllArgsConstructor
 public class DirectorService {
     private final DirectorRepository directorRepository;
-    private final FilmDirectorRepository filmDirectorRepository;
 
     public Collection<DirectorDTO> getAllDirectorDTOs() {
         return directorRepository.getAllDirectors().stream()
@@ -37,7 +34,9 @@ public class DirectorService {
 
     public DirectorDTO saveDirector(DirectorDTO directorDTO) {
         Director director = DirectorMapper.mapToDirector(directorDTO);
-        return findDirectorDTOById(directorRepository.addDirector(director));
+        long addedDirectorId = directorRepository.addDirector(director);
+        directorDTO.setId(addedDirectorId);
+        return directorDTO;
     }
 
     public DirectorDTO updateDirector(DirectorDTO directorDTO) {
@@ -45,7 +44,7 @@ public class DirectorService {
         if (directorRepository.updateDirector(director) == 0) {
             throw new NotFoundException(String.format("Director with id=%s not found", director.getId()));
         }
-        return findDirectorDTOById(director.getId());
+        return directorDTO;
     }
 
     public void removeDirector(Long directorId) {
@@ -53,10 +52,7 @@ public class DirectorService {
     }
 
     public List<Director> getDirectorsByFilmId(Long filmId) {
-        List<FilmDirector> filmDirectors = new ArrayList<>(filmDirectorRepository.findAllByFilmId(filmId));
-        return filmDirectors.stream().map(filmDirector ->
-                findDirectorById(filmDirector.getDirectorId())
-        ).toList();
+        return new ArrayList<>(directorRepository.findAllByFilmId(filmId));
     }
 
     public List<DirectorDTO> fixIfNullOrWithDuplicates(List<DirectorDTO> directorDTOs) {
@@ -65,5 +61,9 @@ public class DirectorService {
         } else {
             return directorDTOs.stream().distinct().map(directorDTO -> findDirectorDTOById(directorDTO.getId())).toList();
         }
+    }
+
+    public Map<Long, List<Director>> findAllByManyFilmIds(Collection<Long> filmIds) {
+        return directorRepository.findAllByManyFilmIds(filmIds);
     }
 }

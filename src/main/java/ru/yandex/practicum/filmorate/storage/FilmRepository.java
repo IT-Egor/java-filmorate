@@ -6,9 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class FilmRepository extends BaseRepository<Film> {
@@ -102,27 +100,60 @@ public class FilmRepository extends BaseRepository<Film> {
         return findMany(query + sort, directorId);
     }
 
-    public Long addFilm(Film film) {
+    public Long addFilm(Film film, List<Long> genreIds, List<Long> directorIds) {
         String insertQuery = "INSERT INTO films (name, description, release_date, duration, rating_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        return insert(insertQuery,
+        long generatedId = insert(insertQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
                 film.getMpaId());
+
+        connectingTablesBatchInsert("film_genres",
+                "genre_id",
+                "film_id",
+                genreIds,
+                generatedId);
+
+        connectingTablesBatchInsert("film_directors",
+                "director_id",
+                "film_id",
+                directorIds,
+                generatedId);
+
+        return generatedId;
     }
 
-    public Long updateFilm(Film film) {
+    public Long updateFilm(Film film, List<Long> genreIds, List<Long> directorIds) {
         String updateQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, " +
                 "rating_id = ? WHERE id = ?";
-        return update(updateQuery,
+        String deleteFilmGenres = "DELETE FROM film_genres WHERE film_id = ?";
+        String deleteFilmDirectors = "DELETE FROM film_directors WHERE film_id = ?";
+
+        long affectedRowsCount = update(updateQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration().toMinutes(),
                 film.getMpaId(),
                 film.getId());
+
+        long filmId = film.getId();
+        delete(deleteFilmDirectors, filmId);
+        delete(deleteFilmGenres, filmId);
+        connectingTablesBatchInsert("film_genres",
+                "genre_id",
+                "film_id",
+                genreIds,
+                filmId);
+        connectingTablesBatchInsert("film_directors",
+                "director_id",
+                "film_id",
+                directorIds,
+                filmId);
+
+        return affectedRowsCount;
     }
 
     public void removeFilm(Long id) {
@@ -159,5 +190,14 @@ public class FilmRepository extends BaseRepository<Film> {
         } else {
             throw new BadRequestException("Invalid popular films filters");
         }
+    }
+
+    public Collection<Film> getAllByIds(Collection<Long> filmIds) {
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+        String selectAllByIds = String.format("""
+                SELECT * FROM films
+                WHERE id IN (%s)
+                """, inSql);
+        return findMany(selectAllByIds, filmIds.toArray());
     }
 }

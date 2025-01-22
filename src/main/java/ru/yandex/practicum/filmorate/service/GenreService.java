@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -28,16 +25,19 @@ public class GenreService {
         return genreRepository.findAll().stream().map(GenreMapper::mapToGenreDTO).sorted(Comparator.comparing(GenreDTO::getId)).toList();
     }
 
-    public Genre findGenreById(Long id) {
-        return genreRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Genre with id %s not found", id)));
-    }
-
     public List<GenreDTO> fixIfNullOrWithDuplicates(List<GenreDTO> genreDTOs) {
         if (genreDTOs == null) {
             return new ArrayList<>();
         } else {
             return genreDTOs.stream().distinct().map(genreDTO -> findGenreDTOById(genreDTO.getId())).toList();
         }
+    }
+
+    public List<Genre> getGenresByFilmId(Long filmId) {
+        return new ArrayList<>(genreRepository.getGenresByFilmId(filmId));
+    }
+
+    public Map<Long, List<Genre>> findAllByManyFilmIds(Collection<Long> filmIds) {
+        return genreRepository.findAllByManyFilmIds(filmIds);
     }
 }

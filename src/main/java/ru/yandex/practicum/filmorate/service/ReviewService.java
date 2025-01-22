@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.mapper.ReviewMapper;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.model.ReviewLike;
+import ru.yandex.practicum.filmorate.storage.ReviewLikeRepository;
 import ru.yandex.practicum.filmorate.storage.ReviewRepository;
 
 import java.util.Collection;
@@ -18,6 +20,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ReviewService {
+    private final ReviewLikeRepository reviewLikeRepository;
     private final ReviewRepository reviewRepository;
     private final EventService eventService;
 
@@ -25,9 +28,12 @@ public class ReviewService {
         try {
             Review review = ReviewMapper.mapReviewDTOToReview(reviewDTO);
             checkFilmIdAndUserId(review);
+
             Long addedReviewId = reviewRepository.addReview(review);
             eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.ADD, addedReviewId);
-            return findReview(addedReviewId);
+
+            reviewDTO.setReviewId(addedReviewId);
+            return reviewDTO;
         } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
         }
@@ -47,9 +53,12 @@ public class ReviewService {
             throw new NotFoundException(String.format("Review with id=%s not found", reviewDTO.getReviewId()));
         } else {
             ReviewDTO oldReview = findReview(reviewDTO.getReviewId());
-            eventService.createEvent(oldReview.getUserId(), EventType.REVIEW, EventOperation.UPDATE, oldReview.getReviewId());
+            reviewDTO.setUserId(oldReview.getUserId());
+            reviewDTO.setFilmId(oldReview.getFilmId());
+            reviewDTO.setReviewId(oldReview.getReviewId());
+            eventService.createEvent(reviewDTO.getUserId(), EventType.REVIEW, EventOperation.UPDATE, reviewDTO.getReviewId());
         }
-        return findReview(reviewDTO.getReviewId());
+        return reviewDTO;
     }
 
     public void deleteReview(Long id) {
@@ -91,6 +100,67 @@ public class ReviewService {
         }
     }
 
+    public long addLikeOnReview(Long reviewId, Long userId) {
+        Integer likeReview = 1;
+        return addLikeOrDislikeOnReview(reviewId, userId, likeReview);
+    }
+
+    public long addDislikeOnReview(Long reviewId, Long userId) {
+        Integer likeReview = -1;
+        return addLikeOrDislikeOnReview(reviewId, userId, likeReview);
+    }
+
+    public long removeLikeOnReview(Long id, Long userId) {
+        return removeLikeOrDislikeOnReview(id, userId);
+    }
+
+    public long removeDislikeOnReview(Long id, Long userId) {
+        return removeLikeOrDislikeOnReview(id, userId);
+    }
+
+    public Long getUseful(Long reviewId) {
+        Optional<Long> usefulOpt = reviewLikeRepository.getUseful(reviewId);
+        return usefulOpt.orElse(0L);
+    }
+
+    private long addLikeOrDislikeOnReview(Long reviewId, Long userId, Integer likeReview) {
+        Optional<ReviewLike> reviewLikeOpt = reviewLikeRepository.findReviewLike(reviewId, userId);
+        if (reviewLikeOpt.isPresent()) {
+            if (reviewLikeOpt.get().getLike().equals(likeReview)) {
+                return reviewLikeOpt.get().getId();
+            }
+            removeLikeOrDislikeOnReview(reviewId, userId);
+        }
+        try {
+            long likeId = reviewLikeRepository.addLikeOrDislikeOnReview(reviewId, userId, likeReview);
+            Long useful = getUseful(reviewId);
+            updateUsefulOfReview(reviewId, useful);
+            return likeId;
+        } catch (NotFoundException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    private long removeLikeOrDislikeOnReview(Long id, Long userId) {
+        ReviewLike reviewLike = findReviewLike(id, userId);
+        if (!reviewLikeRepository.removeLikeOrDislikeOnReview(reviewLike)) {
+            throw new BadRequestException(String.format("Review with id=%s already deleted", id));
+        }
+        Long useful = getUseful(id);
+        updateUsefulOfReview(id, useful);
+        return reviewLike.getId();
+    }
+
+    private ReviewLike findReviewLike(Long id, Long userId) {
+        Optional<ReviewLike> reviewLikeOpt = reviewLikeRepository.findReviewLike(id, userId);
+
+        if (reviewLikeOpt.isPresent()) {
+            return reviewLikeOpt.get();
+        } else {
+            throw new NotFoundException("ReviewLike with id " + id + " not found");
+        }
+    }
+
     private void checkFilmIdAndUserId(Review review) {
         if (review.getUserId() < 0) {
             throw new NotFoundException(String.format("User with id=%s not found", review.getUserId()));
@@ -105,5 +175,4 @@ public class ReviewService {
             throw new BadRequestException("Film id is null");
         }
     }
-
 }

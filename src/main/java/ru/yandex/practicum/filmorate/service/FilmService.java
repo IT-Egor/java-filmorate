@@ -2,24 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dto.DirectorDTO;
-import ru.yandex.practicum.filmorate.dto.FilmDTO;
-import ru.yandex.practicum.filmorate.dto.GenreDTO;
-import ru.yandex.practicum.filmorate.dto.LikeDTO;
+import ru.yandex.practicum.filmorate.dto.*;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,8 +21,6 @@ public class FilmService {
     private final FilmRepository filmRepository;
     private final UserService userService;
     private final MpaService mpaService;
-    private final FilmGenreService filmGenreService;
-    private final FilmDirectorService filmDirectorService;
     private final GenreService genreService;
     private final DirectorService directorService;
     private final LikesService likesService;
@@ -88,13 +77,15 @@ public class FilmService {
             filmDTO.setDirectors(directorService.fixIfNullOrWithDuplicates(filmDTO.getDirectors()));
             Film film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpaId());
-            Long addedFilmId = filmRepository.addFilm(film);
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
-            filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), addedFilmId);
-            filmDirectorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), addedFilmId);
+            List<Long> genreIds = filmDTO.getGenres().stream().map(GenreDTO::getId).toList();
+            List<Long> directorIds = filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList();
+            Long addedFilmId = filmRepository.addFilm(film, genreIds, directorIds);
 
-            return findFilm(addedFilmId);
+            filmDTO.setId(addedFilmId);
+            filmDTO.setMpa(MpaMapper.mapToMpaDTO(mpa));
+            return filmDTO;
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -107,21 +98,19 @@ public class FilmService {
             filmDTO.setDirectors(directorService.fixIfNullOrWithDuplicates(filmDTO.getDirectors()));
             film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpaId());
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
+            filmDTO.setMpa(MpaMapper.mapToMpaDTO(mpa));
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
 
-        if (filmRepository.updateFilm(film) == 0) {
+        List<Long> genreIds = filmDTO.getGenres().stream().map(GenreDTO::getId).toList();
+        List<Long> directorIds = filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList();
+        if (filmRepository.updateFilm(film, genreIds, directorIds) == 0) {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
 
-        filmGenreService.deleteFilmGenres(filmDTO.getId());
-        filmDirectorService.deleteFilmDirectors(filmDTO.getId());
-        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
-        filmDirectorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
-
-        return findFilm(filmDTO.getId());
+        return filmDTO;
     }
 
     public Collection<FilmDTO> getAllFilms() {
@@ -136,7 +125,7 @@ public class FilmService {
 
             Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
-            List<Genre> genres = filmGenreService.getGenresByFilmId(id);
+            List<Genre> genres = genreService.getGenresByFilmId(id);
             List<Director> directors = directorService.getDirectorsByFilmId(id);
 
             return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
@@ -156,28 +145,36 @@ public class FilmService {
         return mapFilmsToFilmsDTO(films);
     }
 
-    private Collection<FilmDTO> mapFilmsToFilmsDTO(Collection<Film> films) {
-        return films.stream().map(film -> {
-            Mpa mpa = mpaService.findMpaById(film.getMpaId());
-
-            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
-            List<Director> directors = filmDirectorService.getDirectorsByFilmId(film.getId());
-
-            return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
-        }).toList();
-    }
-
     public List<FilmDTO> getCommonFilms(Long id, Long friendId) {
         if (userService.findUser(id) == null || userService.findUser(friendId) == null) {
-            throw new NotFoundException("Id is not found");
+            throw new NotFoundException("User is not found");
         }
-        return likesService.getCommonFilms(id, friendId).stream().map(this::findFilm).toList();
+        Collection<Film> films = filmRepository.getAllByIds(likesService.getCommonFilms(id, friendId));
+        return new ArrayList<>(mapFilmsToFilmsDTO(films));
     }
 
     public List<FilmDTO> getRecommendation(Long userId) {
         userService.findUser(userId);
         List<Long> recommendedFilmIds = likesService.getRecommendedFilmIds(userId);
-        return recommendedFilmIds.stream().map(this::findFilm).toList();
+        Collection<Film> films = filmRepository.getAllByIds(recommendedFilmIds);
+        return new ArrayList<>(mapFilmsToFilmsDTO(films));
+    }
+
+    private Collection<FilmDTO> mapFilmsToFilmsDTO(Collection<Film> films) {
+        if (films.isEmpty()) {
+            return List.of();
+        }
+        List<Long> filmIds = films.stream().map(Film::getId).toList();
+        Map<Long, Mpa> filmsMpa = mpaService.findAllByManyFilmIds(filmIds);
+        Map<Long, List<Genre>> filmsGenres = genreService.findAllByManyFilmIds(filmIds);
+        Map<Long, List<Director>> filmsDirectors = directorService.findAllByManyFilmIds(filmIds);
+
+        return films.stream().map(film -> {
+            Mpa mpa = filmsMpa.get(film.getId());
+            List<Genre> genres = filmsGenres.getOrDefault(film.getId(), new ArrayList<>());
+            List<Director> directors = filmsDirectors.getOrDefault(film.getId(), new ArrayList<>());
+            return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
+        }).toList();
     }
 
     private Collection<Film> findFilmsByTitle(String titleQuery) {
