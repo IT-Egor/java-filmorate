@@ -9,10 +9,7 @@ import ru.yandex.practicum.filmorate.dto.LikeDTO;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmRepository;
 
@@ -86,13 +83,14 @@ public class FilmService {
             filmDTO.setDirectors(directorService.fixIfNullOrWithDuplicates(filmDTO.getDirectors()));
             Film film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpaId());
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
             List<Long> genreIds = filmDTO.getGenres().stream().map(GenreDTO::getId).toList();
             List<Long> directorIds = filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList();
             Long addedFilmId = filmRepository.addFilm(film, genreIds, directorIds);
 
             filmDTO.setId(addedFilmId);
+            filmDTO.setMpa(MpaMapper.mapToMpaDTO(mpa));
             return filmDTO;
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
@@ -106,7 +104,8 @@ public class FilmService {
             filmDTO.setDirectors(directorService.fixIfNullOrWithDuplicates(filmDTO.getDirectors()));
             film = FilmMapper.mapToFilm(filmDTO);
 
-            mpaService.findMpaById(film.getMpaId());
+            Mpa mpa = mpaService.findMpaById(film.getMpaId());
+            filmDTO.setMpa(MpaMapper.mapToMpaDTO(mpa));
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
