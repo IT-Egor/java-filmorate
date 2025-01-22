@@ -92,7 +92,8 @@ public class FilmService {
             genreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), addedFilmId);
             directorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), addedFilmId);
 
-            return findFilm(addedFilmId);
+            filmDTO.setId(addedFilmId);
+            return filmDTO;
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -119,7 +120,7 @@ public class FilmService {
         genreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
         directorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
 
-        return findFilm(filmDTO.getId());
+        return filmDTO;
     }
 
     public Collection<FilmDTO> getAllFilms() {

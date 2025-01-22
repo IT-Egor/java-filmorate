@@ -28,9 +28,12 @@ public class ReviewService {
         try {
             Review review = ReviewMapper.mapReviewDTOToReview(reviewDTO);
             checkFilmIdAndUserId(review);
+
             Long addedReviewId = reviewRepository.addReview(review);
             eventService.createEvent(review.getUserId(), EventType.REVIEW, EventOperation.ADD, addedReviewId);
-            return findReview(addedReviewId);
+
+            reviewDTO.setReviewId(addedReviewId);
+            return reviewDTO;
         } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
         }
@@ -50,9 +53,12 @@ public class ReviewService {
             throw new NotFoundException(String.format("Review with id=%s not found", reviewDTO.getReviewId()));
         } else {
             ReviewDTO oldReview = findReview(reviewDTO.getReviewId());
-            eventService.createEvent(oldReview.getUserId(), EventType.REVIEW, EventOperation.UPDATE, oldReview.getReviewId());
+            reviewDTO.setUserId(oldReview.getUserId());
+            reviewDTO.setFilmId(oldReview.getFilmId());
+            reviewDTO.setReviewId(oldReview.getReviewId());
+            eventService.createEvent(reviewDTO.getUserId(), EventType.REVIEW, EventOperation.UPDATE, reviewDTO.getReviewId());
         }
-        return findReview(reviewDTO.getReviewId());
+        return reviewDTO;
     }
 
     public void deleteReview(Long id) {
