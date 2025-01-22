@@ -31,7 +31,6 @@ public class FilmService {
     private final UserService userService;
     private final MpaService mpaService;
     private final FilmGenreService filmGenreService;
-    private final FilmDirectorService filmDirectorService;
     private final GenreService genreService;
     private final DirectorService directorService;
     private final LikesService likesService;
@@ -92,7 +91,7 @@ public class FilmService {
             Long addedFilmId = filmRepository.addFilm(film);
 
             filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), addedFilmId);
-            filmDirectorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), addedFilmId);
+            directorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), addedFilmId);
 
             return findFilm(addedFilmId);
         } catch (NotFoundException e) {
@@ -117,9 +116,9 @@ public class FilmService {
         }
 
         filmGenreService.deleteFilmGenres(filmDTO.getId());
-        filmDirectorService.deleteFilmDirectors(filmDTO.getId());
+        directorService.deleteFilmDirectors(filmDTO.getId());
         filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
-        filmDirectorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
+        directorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
 
         return findFilm(filmDTO.getId());
     }
@@ -161,7 +160,7 @@ public class FilmService {
             Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
             List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
-            List<Director> directors = filmDirectorService.getDirectorsByFilmId(film.getId());
+            List<Director> directors = directorService.getDirectorsByFilmId(film.getId());
 
             return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
         }).toList();
