@@ -147,15 +147,17 @@ public class FilmService {
 
     public List<FilmDTO> getCommonFilms(Long id, Long friendId) {
         if (userService.findUser(id) == null || userService.findUser(friendId) == null) {
-            throw new NotFoundException("Id is not found");
+            throw new NotFoundException("User is not found");
         }
-        return likesService.getCommonFilms(id, friendId).stream().map(this::findFilm).toList();
+        Collection<Film> films = filmRepository.getAllByIds(likesService.getCommonFilms(id, friendId));
+        return new ArrayList<>(mapFilmsToFilmsDTO(films));
     }
 
     public List<FilmDTO> getRecommendation(Long userId) {
         userService.findUser(userId);
         List<Long> recommendedFilmIds = likesService.getRecommendedFilmIds(userId);
-        return recommendedFilmIds.stream().map(this::findFilm).toList();
+        Collection<Film> films = filmRepository.getAllByIds(recommendedFilmIds);
+        return new ArrayList<>(mapFilmsToFilmsDTO(films));
     }
 
     private Collection<FilmDTO> mapFilmsToFilmsDTO(Collection<Film> films) {

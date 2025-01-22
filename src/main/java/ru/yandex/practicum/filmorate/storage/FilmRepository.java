@@ -6,10 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class FilmRepository extends BaseRepository<Film> {
@@ -193,5 +190,14 @@ public class FilmRepository extends BaseRepository<Film> {
         } else {
             throw new BadRequestException("Invalid popular films filters");
         }
+    }
+
+    public Collection<Film> getAllByIds(Collection<Long> filmIds) {
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+        String selectAllByIds = String.format("""
+                SELECT * FROM films
+                WHERE id IN (%s)
+                """, inSql);
+        return findMany(selectAllByIds, filmIds.toArray());
     }
 }

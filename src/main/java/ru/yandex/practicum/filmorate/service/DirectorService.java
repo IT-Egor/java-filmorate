@@ -55,14 +55,6 @@ public class DirectorService {
         return new ArrayList<>(directorRepository.findAllByFilmId(filmId));
     }
 
-    public void addDirectorsToFilm(List<Long> directorsIds, Long filmId) {
-        directorRepository.batchInsert(directorsIds, filmId);
-    }
-
-    public void deleteFilmDirectors(Long filmId) {
-        directorRepository.deleteFilmDirectors(filmId);
-    }
-
     public List<DirectorDTO> fixIfNullOrWithDuplicates(List<DirectorDTO> directorDTOs) {
         if (directorDTOs == null) {
             return new ArrayList<>();
