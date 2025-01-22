@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.FilmDirector;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -42,15 +41,5 @@ public class FilmDirectorRepository extends BaseRepository<FilmDirector> {
     public void deleteFilmDirectors(Long filmId) {
         String deleteFilmGenres = "DELETE FROM film_directors WHERE film_id = ?";
         delete(deleteFilmGenres, filmId);
-    }
-
-    public Collection<FilmDirector> findAllByFilmId(Long filmId) {
-        String selectAllByFilmId = "SELECT * FROM film_directors WHERE film_id = ?";
-        return findMany(selectAllByFilmId, filmId);
-    }
-
-    public Collection<FilmDirector> findAllByDirectorId(Long directorId) {
-        String selectAllByFilmId = "SELECT * FROM film_directors WHERE director_id = ?";
-        return findMany(selectAllByFilmId, directorId);
     }
 }

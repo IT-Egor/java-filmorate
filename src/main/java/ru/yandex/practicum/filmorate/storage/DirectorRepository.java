@@ -38,4 +38,14 @@ public class DirectorRepository extends BaseRepository<Director> {
         String delete = "DELETE FROM directors WHERE id = ?";
         delete(delete, directorId);
     }
+
+    public Collection<Director> findAllByFilmId(Long filmId) {
+        String selectAllByFilmId = """
+                SELECT d.*
+                FROM directors d
+                INNER JOIN film_directors fd ON d.id = fd.director_id
+                WHERE fd.film_id = ?
+                """;
+        return findMany(selectAllByFilmId, filmId);
+    }
 }

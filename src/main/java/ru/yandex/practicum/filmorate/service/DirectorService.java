@@ -6,11 +6,13 @@ import ru.yandex.practicum.filmorate.dto.DirectorDTO;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.FilmDirector;
 import ru.yandex.practicum.filmorate.storage.DirectorRepository;
 import ru.yandex.practicum.filmorate.storage.FilmDirectorRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -53,10 +55,7 @@ public class DirectorService {
     }
 
     public List<Director> getDirectorsByFilmId(Long filmId) {
-        List<FilmDirector> filmDirectors = new ArrayList<>(filmDirectorRepository.findAllByFilmId(filmId));
-        return filmDirectors.stream().map(filmDirector ->
-                findDirectorById(filmDirector.getDirectorId())
-        ).toList();
+        return new ArrayList<>(directorRepository.findAllByFilmId(filmId));
     }
 
     public void addDirectorsToFilm(List<Long> directorsIds, Long filmId) {
