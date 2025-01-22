@@ -37,9 +37,7 @@ public class DirectorService {
 
     public DirectorDTO saveDirector(DirectorDTO directorDTO) {
         Director director = DirectorMapper.mapToDirector(directorDTO);
-        long addedDirectorId = directorRepository.addDirector(director);
-        directorDTO.setId(addedDirectorId);
-        return directorDTO;
+        return findDirectorDTOById(directorRepository.addDirector(director));
     }
 
     public DirectorDTO updateDirector(DirectorDTO directorDTO) {
@@ -47,7 +45,7 @@ public class DirectorService {
         if (directorRepository.updateDirector(director) == 0) {
             throw new NotFoundException(String.format("Director with id=%s not found", director.getId()));
         }
-        return directorDTO;
+        return findDirectorDTOById(director.getId());
     }
 
     public void removeDirector(Long directorId) {

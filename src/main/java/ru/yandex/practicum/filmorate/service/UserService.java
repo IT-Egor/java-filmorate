@@ -57,10 +57,7 @@ public class UserService {
 
     public UserDTO saveUser(MergeUserRequest userMerge) {
         User user = UserMapper.mapMergeRequestToUser(userMerge);
-        long addedUserId = userRepository.addUser(fixUserNameIfNull(user));
-        userMerge.setId(addedUserId);
-        userMerge.setName(user.getName());
-        return UserMapper.mapMergeRequestToUserDTO(userMerge);
+        return findUser(userRepository.addUser(fixUserNameIfNull(user)));
     }
 
     public UserDTO updateUser(MergeUserRequest userMerge) {
@@ -68,8 +65,7 @@ public class UserService {
         if (userRepository.updateUser(fixUserNameIfNull(user)) == 0) {
             throw new NotFoundException(String.format("User with id=%s not found", user.getId()));
         }
-        userMerge.setName(user.getName());
-        return UserMapper.mapMergeRequestToUserDTO(userMerge);
+        return findUser(user.getId());
     }
 
     public UserDTO findUser(Long id) {
