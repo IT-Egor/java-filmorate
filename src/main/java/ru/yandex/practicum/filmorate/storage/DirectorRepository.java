@@ -59,7 +59,7 @@ public class DirectorRepository extends BaseRepository<Director> {
     }
 
     public void deleteFilmDirectors(Long filmId) {
-        String deleteFilmGenres = "DELETE FROM film_directors WHERE film_id = ?";
-        delete(deleteFilmGenres, filmId);
+        String deleteFilmDirectors = "DELETE FROM film_directors WHERE film_id = ?";
+        delete(deleteFilmDirectors, filmId);
     }
 }
