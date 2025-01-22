@@ -19,8 +19,13 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor
 public class FilmController {
-    private final String COUNT_MAP_PARAM = "count";
-    private final String DEFAULT_COUNT_PARAM_VALUE = "10";
+    private static class ParamConstants {
+        public static final String countMapParam = "count";
+        public static final String defaultCountParamValue = "10";
+        public static final String searchQueryParam = "query";
+        public static final String searchByConstant = "by";
+        public static final String searchByDelimiter = ",";
+    }
 
     private final FilmService filmService;
 
@@ -58,7 +63,7 @@ public class FilmController {
     public Collection<FilmDTO> getMostPopularFilms(@Valid
                                                    @PopularFilmsFilters
                                                    @RequestParam Map<String, String> params) {
-        params.putIfAbsent(COUNT_MAP_PARAM, DEFAULT_COUNT_PARAM_VALUE);
+        params.putIfAbsent(ParamConstants.countMapParam, ParamConstants.defaultCountParamValue);
         return filmService.getMostPopularFilms(params);
     }
 
@@ -68,7 +73,8 @@ public class FilmController {
                                            @RequestParam
                                            Map<String, String> params) {
 
-        return filmService.searchFilms(params.get("query"), List.of(params.get("by").split(",")));
+        return filmService.searchFilms(params.get(ParamConstants.searchQueryParam),
+                List.of(params.get(ParamConstants.searchByConstant).split(ParamConstants.searchByDelimiter)));
     }
 
     @GetMapping("/director/{directorId}")
