@@ -19,6 +19,9 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor
 public class FilmController {
+    private final String COUNT_MAP_PARAM = "count";
+    private final String DEFAULT_COUNT_PARAM_VALUE = "10";
+
     private final FilmService filmService;
 
     @GetMapping
@@ -55,7 +58,7 @@ public class FilmController {
     public Collection<FilmDTO> getMostPopularFilms(@Valid
                                                    @PopularFilmsFilters
                                                    @RequestParam Map<String, String> params) {
-        params.putIfAbsent("count", "10");
+        params.putIfAbsent(COUNT_MAP_PARAM, DEFAULT_COUNT_PARAM_VALUE);
         return filmService.getMostPopularFilms(params);
     }
 
