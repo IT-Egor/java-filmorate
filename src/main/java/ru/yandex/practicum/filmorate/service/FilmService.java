@@ -92,7 +92,8 @@ public class FilmService {
             List<Long> directorIds = filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList();
             Long addedFilmId = filmRepository.addFilm(film, genreIds, directorIds);
 
-            return findFilm(addedFilmId);
+            filmDTO.setId(addedFilmId);
+            return filmDTO;
         } catch (NotFoundException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -116,7 +117,7 @@ public class FilmService {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
 
-        return findFilm(filmDTO.getId());
+        return filmDTO;
     }
 
     public Collection<FilmDTO> getAllFilms() {
