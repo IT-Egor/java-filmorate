@@ -30,7 +30,6 @@ public class FilmService {
     private final FilmRepository filmRepository;
     private final UserService userService;
     private final MpaService mpaService;
-    private final FilmGenreService filmGenreService;
     private final GenreService genreService;
     private final DirectorService directorService;
     private final LikesService likesService;
@@ -90,7 +89,7 @@ public class FilmService {
             mpaService.findMpaById(film.getMpaId());
             Long addedFilmId = filmRepository.addFilm(film);
 
-            filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), addedFilmId);
+            genreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), addedFilmId);
             directorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), addedFilmId);
 
             return findFilm(addedFilmId);
@@ -115,9 +114,9 @@ public class FilmService {
             throw new NotFoundException(String.format("Film with id=%s not found", filmDTO.getId()));
         }
 
-        filmGenreService.deleteFilmGenres(filmDTO.getId());
+        genreService.deleteFilmGenres(filmDTO.getId());
         directorService.deleteFilmDirectors(filmDTO.getId());
-        filmGenreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
+        genreService.addGenresToFilm(filmDTO.getGenres().stream().map(GenreDTO::getId).toList(), filmDTO.getId());
         directorService.addDirectorsToFilm(filmDTO.getDirectors().stream().map(DirectorDTO::getId).toList(), filmDTO.getId());
 
         return findFilm(filmDTO.getId());
@@ -135,7 +134,7 @@ public class FilmService {
 
             Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
-            List<Genre> genres = filmGenreService.getGenresByFilmId(id);
+            List<Genre> genres = genreService.getGenresByFilmId(id);
             List<Director> directors = directorService.getDirectorsByFilmId(id);
 
             return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
@@ -159,7 +158,7 @@ public class FilmService {
         return films.stream().map(film -> {
             Mpa mpa = mpaService.findMpaById(film.getMpaId());
 
-            List<Genre> genres = filmGenreService.getGenresByFilmId(film.getId());
+            List<Genre> genres = genreService.getGenresByFilmId(film.getId());
             List<Director> directors = directorService.getDirectorsByFilmId(film.getId());
 
             return FilmMapper.mapToFilmDTO(film, genres, directors, mpa);
