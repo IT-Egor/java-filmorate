@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.MpaRepository;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -29,5 +30,9 @@ public class MpaService {
     public Collection<MpaDTO> getAllMpaDTOs() {
         return mpaRepository.findAll().stream().map(MpaMapper::mapToMpaDTO)
                 .sorted(Comparator.comparing(MpaDTO::getId)).toList();
+    }
+
+    public Map<Long, Mpa> findAllByManyFilmIds(Collection<Long> filmIds) {
+        return mpaRepository.findAllByManyFilmIds(filmIds);
     }
 }

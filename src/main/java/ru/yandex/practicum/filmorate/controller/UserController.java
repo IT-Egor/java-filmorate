@@ -4,11 +4,16 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.MergeUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -16,10 +21,17 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final EventService eventService;
+    private final FilmService filmService;
 
     @GetMapping
     public Collection<UserDTO> getUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public UserDTO getUser(@PathVariable Long id) {
+        return userService.findUser(id);
     }
 
     @PostMapping
@@ -50,5 +62,20 @@ public class UserController {
     @GetMapping("{id}/friends/common/{otherId}")
     public Collection<UserDTO> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         return userService.commonFriends(id, otherId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void removeUser(@PathVariable Long userId) {
+        userService.removeUser(userId);
+    }
+
+    @GetMapping("{id}/feed")
+    public Collection<Event> getFeed(@PathVariable Long id) {
+        return eventService.getFeed(id);
+    }
+
+    @GetMapping("/{userId}/recommendations")
+    public List<FilmDTO> getRecommendations(@PathVariable Long userId) {
+        return filmService.getRecommendation(userId);
     }
 }

@@ -7,9 +7,10 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"filmId", "genreId"})
-public class FilmGenre {
+@EqualsAndHashCode(of = {"reviewId", "userId"})
+public class ReviewLike {
     private Long id;
-    private Long filmId;
-    private Long genreId;
+    private Long reviewId;
+    private Long userId;
+    private Integer like;
 }

@@ -20,7 +20,6 @@ public class MergeUserRequest {
     @NotBlank(message = "Invalid login")
     private String login;
 
-    @NotBlank(message = "Invalid name")
     private String name;
 
     @PastOrPresent
