@@ -95,6 +95,7 @@ Template repository for Filmorate project.
 ## 👥 Команда проекта
 Проект разработан в составе учебной команды.  
 Состав:
+- [Белоусов Егор](https://github.com/IT-Egor)
 - [Соснин Иван](https://github.com/sosnin-ivan)
 - [Зарубитский Игорь](https://github.com/IZarubitskiy)
 - [Бадеева Екатерина](https://github.com/EkaterinaBadeeva)
